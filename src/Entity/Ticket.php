@@ -96,24 +96,24 @@ class Ticket
         return $this;
     }
 
-    public function getCategory(): ?Category
+    public function getCategory(): Category
     {
         return $this->category;
     }
 
-    public function setCategory(?Category $category): self
+    public function setCategory(Category $category): self
     {
         $this->category = $category;
 
         return $this;
     }
 
-    public function getAuthor(): ?User
+    public function getAuthor(): User
     {
         return $this->author;
     }
 
-    public function setAuthor(?User $author): self
+    public function setAuthor(User $author): self
     {
         $this->author = $author;
 
@@ -173,7 +173,7 @@ class Ticket
         return $this->uuid;
     }
 
-    public function setUuid($uuid): self
+    public function setUuid(Uuid $uuid): self
     {
         $this->uuid = $uuid;
 
@@ -200,11 +200,7 @@ class Ticket
 
     public function removeComment(Comment $comment): self
     {
-        if ($this->comments->removeElement($comment)) {
-            if ($comment->getTicket() === $this) {
-                $comment->setTicket(null);
-            }
-        }
+        $this->comments->removeElement($comment);
 
         return $this;
     }

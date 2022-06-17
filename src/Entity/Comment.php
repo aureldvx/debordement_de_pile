@@ -27,7 +27,7 @@ class Comment
     private Ticket $ticket;
 
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
-    private Comment $parent;
+    private ?Comment $parent;
 
     /** @var Collection<int, Comment> */
     #[ORM\OneToMany(mappedBy: 'parent', targetEntity: self::class)]
@@ -163,7 +163,7 @@ class Comment
         return $this->uuid;
     }
 
-    public function setUuid($uuid): self
+    public function setUuid(Uuid $uuid): self
     {
         $this->uuid = $uuid;
 

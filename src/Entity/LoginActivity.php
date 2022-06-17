@@ -24,7 +24,7 @@ class LoginActivity
 
     #[Assert\Ip]
     #[ORM\Column(type: 'binary', length: 16)]
-    private int $ipAddress;
+    private mixed $ipAddress;
 
     public function getId(): int
     {
@@ -57,7 +57,7 @@ class LoginActivity
 
     public function getIpAddress(): string
     {
-        return long2ip($this->ipAddress);
+        return (string)long2ip(intval($this->ipAddress));
     }
 
     public function setIpAddress(string $ipAddress): self

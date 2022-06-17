@@ -137,6 +137,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return array_unique($roles);
     }
 
+    /** @param string[] $roles */
     public function setRoles(array $roles): self
     {
         $this->roles = $roles;
@@ -162,7 +163,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @see UserInterface
      */
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
@@ -317,7 +318,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->uuid;
     }
 
-    public function setUuid($uuid): self
+    public function setUuid(Uuid $uuid): self
     {
         $this->uuid = $uuid;
 
@@ -344,11 +345,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function removeTicket(Ticket $ticket): self
     {
-        if ($this->tickets->removeElement($ticket)) {
-            if ($ticket->getAuthor() === $this) {
-                $ticket->setAuthor(null);
-            }
-        }
+        $this->tickets->removeElement($ticket);
 
         return $this;
     }
@@ -373,11 +370,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function removeComment(Comment $comment): self
     {
-        if ($this->comments->removeElement($comment)) {
-            if ($comment->getAuthor() === $this) {
-                $comment->setAuthor(null);
-            }
-        }
+        $this->comments->removeElement($comment);
 
         return $this;
     }
@@ -402,11 +395,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function removeVote(Vote $vote): self
     {
-        if ($this->votes->removeElement($vote)) {
-            if ($vote->getAuthor() === $this) {
-                $vote->setAuthor(null);
-            }
-        }
+        $this->votes->removeElement($vote);
 
         return $this;
     }
@@ -431,11 +420,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function removeReport(Report $report): self
     {
-        if ($this->reports->removeElement($report)) {
-            if ($report->getAuthor() === $this) {
-                $report->setAuthor(null);
-            }
-        }
+        $this->reports->removeElement($report);
 
         return $this;
     }
@@ -460,11 +445,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function removeLoginActivity(LoginActivity $loginActivity): self
     {
-        if ($this->loginActivities->removeElement($loginActivity)) {
-            if ($loginActivity->getRelatedUser() === $this) {
-                $loginActivity->setRelatedUser(null);
-            }
-        }
+        $this->loginActivities->removeElement($loginActivity);
 
         return $this;
     }
