@@ -74,9 +74,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'author', targetEntity: Ticket::class, orphanRemoval: true)]
     private Collection $tickets;
 
+    /** @var Collection<int, Comment> */
+    #[ORM\OneToMany(mappedBy: 'author', targetEntity: Comment::class, orphanRemoval: true)]
+    private Collection $comments;
+
     public function __construct()
     {
         $this->tickets = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
 
     public function getId(): int
@@ -327,6 +332,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         if ($this->tickets->removeElement($ticket)) {
             if ($ticket->getAuthor() === $this) {
                 $ticket->setAuthor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Comment>
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): self
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments[] = $comment;
+            $comment->setAuthor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): self
+    {
+        if ($this->comments->removeElement($comment)) {
+            if ($comment->getAuthor() === $this) {
+                $comment->setAuthor(null);
             }
         }
 
