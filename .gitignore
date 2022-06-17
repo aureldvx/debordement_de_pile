@@ -11,8 +11,19 @@
 ###> php-tooling ###
 .DS_Store
 .php-cs-fixer.cache
+.phpcs-cache
 .idea/
 .vscode/
 vendor/
 node_modules/
 ###< php-tooling ###
+
+###> symfony/phpunit-bridge ###
+.phpunit.result.cache
+/phpunit.xml
+###< symfony/phpunit-bridge ###
+
+###> phpunit/phpunit ###
+/phpunit.xml
+.phpunit.result.cache
+###< phpunit/phpunit ###
