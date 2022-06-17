@@ -1,0 +1,17 @@
+version: '3.1'
+
+services:
+  postgres_db:
+    image: postgres:13
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: debordement_pile
+    ports:
+      - "65432:5432"
+    volumes:
+      - postgres_db_vol:/var/lib/postgresql/data:rw
+
+volumes:
+  postgres_db_vol:
