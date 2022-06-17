@@ -86,12 +86,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'author', targetEntity: Report::class)]
     private Collection $reports;
 
+    /** @var Collection<int, LoginActivity> */
+    #[ORM\OneToMany(mappedBy: 'relatedUser', targetEntity: LoginActivity::class)]
+    private Collection $loginActivities;
+
     public function __construct()
     {
         $this->tickets = new ArrayCollection();
         $this->comments = new ArrayCollection();
         $this->votes = new ArrayCollection();
         $this->reports = new ArrayCollection();
+        $this->loginActivities = new ArrayCollection();
     }
 
     public function getId(): int
@@ -429,6 +434,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         if ($this->reports->removeElement($report)) {
             if ($report->getAuthor() === $this) {
                 $report->setAuthor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, LoginActivity>
+     */
+    public function getLoginActivities(): Collection
+    {
+        return $this->loginActivities;
+    }
+
+    public function addLoginActivity(LoginActivity $loginActivity): self
+    {
+        if (!$this->loginActivities->contains($loginActivity)) {
+            $this->loginActivities[] = $loginActivity;
+            $loginActivity->setRelatedUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLoginActivity(LoginActivity $loginActivity): self
+    {
+        if ($this->loginActivities->removeElement($loginActivity)) {
+            if ($loginActivity->getRelatedUser() === $this) {
+                $loginActivity->setRelatedUser(null);
             }
         }
 
