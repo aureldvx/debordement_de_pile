@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="tools/phpcs/vendor/squizlabs/php_codesniffer/phpcs.xsd">
+    <arg name="basepath" value="."/>
+    <arg name="cache" value=".phpcs-cache"/>
+    <arg name="colors"/>
+    <arg name="extensions" value="php"/>
+    <!-- Use Symfony Coding Standards (but rearranged to omit some useless warnings -->
+    <config name="installed_paths" value="tools/phpcs/vendor/escapestudios/symfony2-coding-standard"/>
+    <rule ref="Symfony">
+        <exclude name="PEAR.Commenting.FileComment.Missing" />
+        <exclude name="Symfony.Commenting.FunctionComment.Missing" />
+        <exclude name="Symfony.Commenting.FunctionComment.MissingParamTag" />
+        <exclude name="Symfony.Commenting.ClassComment.Missing" />
+        <exclude name="Symfony.Functions.Arguments.Invalid" />
+        <exclude name="Symfony.Commenting.FunctionComment.MissingReturn" />
+    </rule>
+    <file>src/</file>
+    <file>tests/</file>
+</ruleset>
