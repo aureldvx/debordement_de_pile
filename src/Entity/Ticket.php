@@ -56,10 +56,15 @@ class Ticket
     #[ORM\OneToMany(mappedBy: 'ticket', targetEntity: Vote::class)]
     private Collection $votes;
 
+    /** @var Collection<int, Report> */
+    #[ORM\OneToMany(mappedBy: 'ticket', targetEntity: Report::class)]
+    private Collection $reports;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
         $this->votes = new ArrayCollection();
+        $this->reports = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -163,7 +168,7 @@ class Ticket
         return $this;
     }
 
-    public function getUuid()
+    public function getUuid(): Uuid
     {
         return $this->uuid;
     }
@@ -227,6 +232,35 @@ class Ticket
         if ($this->votes->removeElement($vote)) {
             if ($vote->getTicket() === $this) {
                 $vote->setTicket(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Report>
+     */
+    public function getReports(): Collection
+    {
+        return $this->reports;
+    }
+
+    public function addReport(Report $report): self
+    {
+        if (!$this->reports->contains($report)) {
+            $this->reports[] = $report;
+            $report->setTicket($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReport(Report $report): self
+    {
+        if ($this->reports->removeElement($report)) {
+            if ($report->getTicket() === $this) {
+                $report->setTicket(null);
             }
         }
 

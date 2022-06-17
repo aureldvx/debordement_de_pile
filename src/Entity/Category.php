@@ -119,7 +119,7 @@ class Category
         return $this;
     }
 
-    public function getUuid()
+    public function getUuid(): Uuid
     {
         return $this->uuid;
     }

@@ -82,11 +82,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'author', targetEntity: Vote::class, orphanRemoval: true)]
     private Collection $votes;
 
+    /** @var Collection<int, Report> */
+    #[ORM\OneToMany(mappedBy: 'author', targetEntity: Report::class)]
+    private Collection $reports;
+
     public function __construct()
     {
         $this->tickets = new ArrayCollection();
         $this->comments = new ArrayCollection();
         $this->votes = new ArrayCollection();
+        $this->reports = new ArrayCollection();
     }
 
     public function getId(): int
@@ -395,6 +400,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         if ($this->votes->removeElement($vote)) {
             if ($vote->getAuthor() === $this) {
                 $vote->setAuthor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Report>
+     */
+    public function getReports(): Collection
+    {
+        return $this->reports;
+    }
+
+    public function addReport(Report $report): self
+    {
+        if (!$this->reports->contains($report)) {
+            $this->reports[] = $report;
+            $report->setAuthor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReport(Report $report): self
+    {
+        if ($this->reports->removeElement($report)) {
+            if ($report->getAuthor() === $this) {
+                $report->setAuthor(null);
             }
         }
 
