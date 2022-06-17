@@ -26,6 +26,8 @@ final class Version20220617212545 extends AbstractMigration
         $this->addSql('COMMENT ON COLUMN "user".blocked_at IS \'(DC2Type:datetime_immutable)\'');
         $this->addSql('COMMENT ON COLUMN "user".created_at IS \'(DC2Type:datetime_immutable)\'');
         $this->addSql('COMMENT ON COLUMN "user".uuid IS \'(DC2Type:uuid)\'');
+        $this->addSql('CREATE UNIQUE INDEX UNIQ_8D93D649989D9B62 ON "user" (slug)');
+        $this->addSql('CREATE UNIQUE INDEX UNIQ_8D93D649D17F50A6 ON "user" (uuid)');
     }
 
     public function down(Schema $schema): void
@@ -34,5 +36,7 @@ final class Version20220617212545 extends AbstractMigration
         $this->addSql('CREATE SCHEMA public');
         $this->addSql('DROP SEQUENCE "user_id_seq" CASCADE');
         $this->addSql('DROP TABLE "user"');
+        $this->addSql('DROP INDEX UNIQ_8D93D649989D9B62');
+        $this->addSql('DROP INDEX UNIQ_8D93D649D17F50A6');
     }
 }
