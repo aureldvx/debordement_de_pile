@@ -52,9 +52,14 @@ class Ticket
     #[ORM\OneToMany(mappedBy: 'ticket', targetEntity: Comment::class, orphanRemoval: true)]
     private Collection $comments;
 
+    /** @var Collection<int, Vote> */
+    #[ORM\OneToMany(mappedBy: 'ticket', targetEntity: Vote::class)]
+    private Collection $votes;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
+        $this->votes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -193,6 +198,35 @@ class Ticket
         if ($this->comments->removeElement($comment)) {
             if ($comment->getTicket() === $this) {
                 $comment->setTicket(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Vote>
+     */
+    public function getVotes(): Collection
+    {
+        return $this->votes;
+    }
+
+    public function addVote(Vote $vote): self
+    {
+        if (!$this->votes->contains($vote)) {
+            $this->votes[] = $vote;
+            $vote->setTicket($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVote(Vote $vote): self
+    {
+        if ($this->votes->removeElement($vote)) {
+            if ($vote->getTicket() === $this) {
+                $vote->setTicket(null);
             }
         }
 

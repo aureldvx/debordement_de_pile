@@ -11,6 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: CommentRepository::class)]
+#[ORM\Table(name: '`comment`')]
 class Comment
 {
     #[ORM\Id]
@@ -48,9 +49,14 @@ class Comment
     #[ORM\Column(type: 'datetime')]
     private DateTimeInterface $updatedAt;
 
+    /** @var Collection<int, Vote> */
+    #[ORM\OneToMany(mappedBy: 'comment', targetEntity: Vote::class)]
+    private Collection $votes;
+
     public function __construct()
     {
         $this->children = new ArrayCollection();
+        $this->votes = new ArrayCollection();
     }
 
     public function getId(): int
@@ -179,6 +185,35 @@ class Comment
     public function setUpdatedAt(DateTimeInterface $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Vote>
+     */
+    public function getVotes(): Collection
+    {
+        return $this->votes;
+    }
+
+    public function addVote(Vote $vote): self
+    {
+        if (!$this->votes->contains($vote)) {
+            $this->votes[] = $vote;
+            $vote->setComment($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVote(Vote $vote): self
+    {
+        if ($this->votes->removeElement($vote)) {
+            if ($vote->getComment() === $this) {
+                $vote->setComment(null);
+            }
+        }
 
         return $this;
     }
