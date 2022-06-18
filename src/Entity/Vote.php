@@ -21,16 +21,16 @@ class Vote
     #[ORM\Column(type: 'integer')]
     private int $id;
 
-    #[ORM\ManyToOne(targetEntity: Ticket::class, inversedBy: 'votes')]
+    #[ORM\ManyToOne(targetEntity: Ticket::class, cascade: ['persist'], inversedBy: 'votes')]
     private ?Ticket $ticket;
 
-    #[ORM\ManyToOne(targetEntity: Comment::class, inversedBy: 'votes')]
+    #[ORM\ManyToOne(targetEntity: Comment::class, cascade: ['persist'], inversedBy: 'votes')]
     private ?Comment $comment;
 
     #[ORM\Column(type: 'integer')]
     private int $type;
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'votes')]
+    #[ORM\ManyToOne(targetEntity: User::class, cascade: ['persist'], inversedBy: 'votes')]
     #[ORM\JoinColumn(nullable: false)]
     private User $author;
 
