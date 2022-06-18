@@ -35,11 +35,11 @@ class Ticket
     #[ORM\Column(type: 'text')]
     private string $content;
 
-    #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'tickets')]
+    #[ORM\ManyToOne(targetEntity: Category::class, cascade: ['persist'], inversedBy: 'tickets')]
     #[ORM\JoinColumn(nullable: false)]
     private Category $category;
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'tickets')]
+    #[ORM\ManyToOne(targetEntity: User::class, cascade: ['persist'], inversedBy: 'tickets')]
     #[ORM\JoinColumn(nullable: false)]
     private User $author;
 
