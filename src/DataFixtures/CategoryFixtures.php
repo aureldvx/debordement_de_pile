@@ -12,7 +12,6 @@ class CategoryFixtures extends AbstractFixture implements DependentFixtureInterf
 {
     protected int $totalToGenerate = 18;
 
-
     /** @throws Exception */
     public function load(ObjectManager $manager): void
     {

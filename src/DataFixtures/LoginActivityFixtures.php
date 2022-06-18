@@ -4,9 +4,9 @@ namespace App\DataFixtures;
 
 use App\Entity\LoginActivity;
 use App\Entity\User;
+use DateTimeImmutable;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
-use DateTimeImmutable;
 use Exception;
 
 class LoginActivityFixtures extends AbstractFixture implements DependentFixtureInterface
