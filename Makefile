@@ -1,3 +1,7 @@
+install:
+	composer install
+	sh ./tools/install_php_tools.sh
+
 fix:
 	./tools/phpcsfixer/vendor/bin/php-cs-fixer fix
 
@@ -16,7 +20,7 @@ phpbeautify:
 phpcpd:
 	./tools/phpcpd/vendor/bin/phpcpd src/
 
-lint_back:
+lint:
 	make phpmd
 	make phpcpd
 	make phpcs
