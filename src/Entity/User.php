@@ -10,7 +10,6 @@ use App\Entity\Trait\UuidTrait;
 use App\Helper\DateTimeHelpers;
 use App\Repository\UserRepository;
 use DateTimeImmutable;
-use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -62,7 +61,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', length: 200)]
     private string $email;
 
-    #[ORM\Column(type: 'string', length: 15)]
+    #[ORM\Column(type: 'string', length: 20)]
     private string $phone;
 
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]

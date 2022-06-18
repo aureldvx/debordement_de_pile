@@ -7,7 +7,6 @@ use App\Entity\Trait\EnabledTrait;
 use App\Enum\VoteType;
 use App\Helper\DateTimeHelpers;
 use App\Repository\VoteRepository;
-use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: VoteRepository::class)]
