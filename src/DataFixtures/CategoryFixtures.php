@@ -23,7 +23,8 @@ class CategoryFixtures extends AbstractFixture implements DependentFixtureInterf
             $category = new Category();
 
             do {
-                $title = $this->faker->sentence();
+                /** @var string $title */
+                $title = $this->faker->words(3, true);
             } while (in_array($title, $titles, true));
 
             /** @var User $user */
@@ -31,7 +32,7 @@ class CategoryFixtures extends AbstractFixture implements DependentFixtureInterf
 
             $category
                 ->setTitle($title)
-                ->setSlug($this->slugger->slug($title))
+                ->setSlug($this->slugger->slug($title)->lower())
                 ->setCreatedBy($user)
                 ->setUpdatedBy($user);
 
