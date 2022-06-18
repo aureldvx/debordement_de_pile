@@ -5,8 +5,8 @@ services:
     image: postgres:13
     restart: always
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
       POSTGRES_DB: debordement_pile
     ports:
       - "65432:5432"
