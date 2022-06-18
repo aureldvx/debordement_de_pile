@@ -31,18 +31,18 @@ class Comment
     #[ORM\Column(type: 'text')]
     private string $content;
 
-    #[ORM\ManyToOne(targetEntity: Ticket::class, inversedBy: 'comments')]
+    #[ORM\ManyToOne(targetEntity: Ticket::class, cascade: ['persist'], inversedBy: 'comments')]
     #[ORM\JoinColumn(nullable: false)]
     private Ticket $ticket;
 
-    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
+    #[ORM\ManyToOne(targetEntity: self::class, cascade: ['persist'], inversedBy: 'children')]
     private ?Comment $parent;
 
     /** @var Collection<int, Comment> */
-    #[ORM\OneToMany(mappedBy: 'parent', targetEntity: self::class)]
+    #[ORM\OneToMany(mappedBy: 'parent', targetEntity: self::class, cascade: ['persist'])]
     private Collection $children;
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'comments')]
+    #[ORM\ManyToOne(targetEntity: User::class, cascade: ['persist'], inversedBy: 'comments')]
     #[ORM\JoinColumn(nullable: false)]
     private User $author;
 
