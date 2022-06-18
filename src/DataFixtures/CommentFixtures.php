@@ -16,19 +16,20 @@ class CommentFixtures extends AbstractFixture implements DependentFixtureInterfa
     /** @throws Exception */
     public function load(ObjectManager $manager): void
     {
+        $total = 0;
         for ($i = 0; $i < $this->totalToGenerate; ++$i) {
             /** @var Ticket $ticket */
             $ticket = $this->getRef('ticket', $i % 540);
 
-            $rootComment = $this->createComment($manager, $ticket, $i);
+            $rootComment = $this->createComment($manager, $ticket, $total++);
 
             $childCount = $this->faker->numberBetween(0, 2);
             for ($j = 0; $j < $childCount; ++$j) {
-                $childComment = $this->createComment($manager, $ticket, $i, $rootComment);
+                $childComment = $this->createComment($manager, $ticket, $total++, $rootComment);
 
                 $subChildCount = $this->faker->numberBetween(0, 2);
                 for ($k = 0; $k < $subChildCount; ++$k) {
-                    $this->createComment($manager, $ticket, $i, $childComment);
+                    $this->createComment($manager, $ticket, $total++, $childComment);
                 }
             }
         }
@@ -60,6 +61,7 @@ class CommentFixtures extends AbstractFixture implements DependentFixtureInterfa
             ->setTicket($ticket);
 
         $manager->persist($comment);
+        $this->addRef('comment', $index, $comment);
 
         return $comment;
     }
