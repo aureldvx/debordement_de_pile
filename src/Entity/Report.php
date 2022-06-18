@@ -27,13 +27,13 @@ class Report
     #[ORM\Column(type: 'text')]
     private string $description;
 
-    #[ORM\ManyToOne(targetEntity: Ticket::class, inversedBy: 'reports')]
+    #[ORM\ManyToOne(targetEntity: Ticket::class, cascade: ['persist'], inversedBy: 'reports')]
     private ?Ticket $ticket;
 
-    #[ORM\ManyToOne(targetEntity: Comment::class, inversedBy: 'reports')]
+    #[ORM\ManyToOne(targetEntity: Comment::class, cascade: ['persist'], inversedBy: 'reports')]
     private ?Comment $comment;
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'reports')]
+    #[ORM\ManyToOne(targetEntity: User::class, cascade: ['persist'], inversedBy: 'reports')]
     #[ORM\JoinColumn(nullable: false)]
     private User $author;
 
