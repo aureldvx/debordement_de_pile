@@ -7,14 +7,14 @@ use Doctrine\Persistence\ObjectManager;
 
 class UserFixtures extends AbstractFixture
 {
+    protected int $totalToGenerate = 6;
+
     public function load(ObjectManager $manager): void
     {
         /** @var string[] $pseudos */
         $pseudos = [];
 
-        $references = new ReferenceValueObject();
-
-        for ($i = 0; $i <= $this->totalToGenerate; ++$i) {
+        for ($i = 0; $i < $this->totalToGenerate; ++$i) {
             $user = new User();
 
             do {
@@ -45,10 +45,9 @@ class UserFixtures extends AbstractFixture
                 ->setRoles(0 === $i ? ['ROLE_ADMIN'] : []);
 
             $manager->persist($user);
-            $references->addValue($user);
+            $this->addRef('user', $i, $user);
         }
 
-        $this->addReference('users', $references);
         $manager->flush();
     }
 }
