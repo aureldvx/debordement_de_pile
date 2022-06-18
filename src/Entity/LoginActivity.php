@@ -6,7 +6,6 @@ use App\Helper\DateTimeHelpers;
 use App\Repository\LoginActivityRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: LoginActivityRepository::class)]
 #[ORM\Table(name: '`login_activity`')]
@@ -24,9 +23,8 @@ class LoginActivity
     #[ORM\Column(type: 'datetime_immutable')]
     private DateTimeImmutable $connectedAt;
 
-    #[Assert\Ip]
-    #[ORM\Column(type: 'binary', length: 16)]
-    private mixed $ipAddress;
+    #[ORM\Column(type: 'bigint')]
+    private string $ipAddress;
 
     public function __construct()
     {
@@ -69,7 +67,7 @@ class LoginActivity
 
     public function setIpAddress(string $ipAddress): self
     {
-        $this->ipAddress = ip2long($ipAddress);
+        $this->ipAddress = (string) ip2long($ipAddress);
 
         return $this;
     }
