@@ -2,25 +2,36 @@
 
 namespace App\Entity;
 
+use App\Entity\Trait\CreatedAtTrait;
+use App\Entity\Trait\EnabledTrait;
+use App\Entity\Trait\SlugTrait;
+use App\Entity\Trait\TitleTrait;
+use App\Entity\Trait\UpdatedAtTrait;
+use App\Entity\Trait\UuidTrait;
 use App\Repository\CategoryRepository;
-use DateTimeImmutable;
-use DateTimeInterface;
+use App\Helper\DateTimeHelpers;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Exception;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
 #[ORM\Table(name: '`category`')]
+#[ORM\HasLifecycleCallbacks]
 class Category
 {
+    use TitleTrait;
+    use UuidTrait;
+    use SlugTrait;
+    use EnabledTrait;
+    use CreatedAtTrait;
+    use UpdatedAtTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private int $id;
-
-    #[ORM\Column(type: 'string', length: 255)]
-    private string $title;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
@@ -30,21 +41,6 @@ class Category
     #[ORM\JoinColumn(nullable: false)]
     private User $updatedBy;
 
-    #[ORM\Column(type: 'boolean')]
-    private bool $enabled = true;
-
-    #[ORM\Column(type: 'string', length: 255, unique: true)]
-    private string $slug;
-
-    #[ORM\Column(type: 'uuid', unique: true)]
-    private Uuid $uuid;
-
-    #[ORM\Column(type: 'datetime_immutable')]
-    private DateTimeImmutable $createdAt;
-
-    #[ORM\Column(type: 'datetime')]
-    private DateTimeInterface $updatedAt;
-
     /** @var Collection<int, Ticket> */
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: Ticket::class)]
     private Collection $tickets;
@@ -52,23 +48,20 @@ class Category
     public function __construct()
     {
         $this->tickets = new ArrayCollection();
+        $this->uuid = Uuid::v4();
+        $this->createdAt = DateTimeHelpers::createImmutable();
+        $this->updatedAt = DateTimeHelpers::createClassic();
     }
 
-    public function getId(): ?int
+    #[ORM\PreUpdate]
+    public function preUpdate(): void
+    {
+        $this->updatedAt = DateTimeHelpers::createClassic();
+    }
+
+    public function getId(): int
     {
         return $this->id;
-    }
-
-    public function getTitle(): ?string
-    {
-        return $this->title;
-    }
-
-    public function setTitle(string $title): self
-    {
-        $this->title = $title;
-
-        return $this;
     }
 
     public function getCreatedBy(): User
@@ -95,69 +88,7 @@ class Category
         return $this;
     }
 
-    public function isEnabled(): ?bool
-    {
-        return $this->enabled;
-    }
-
-    public function setEnabled(bool $enabled): self
-    {
-        $this->enabled = $enabled;
-
-        return $this;
-    }
-
-    public function getSlug(): ?string
-    {
-        return $this->slug;
-    }
-
-    public function setSlug(string $slug): self
-    {
-        $this->slug = $slug;
-
-        return $this;
-    }
-
-    public function getUuid(): Uuid
-    {
-        return $this->uuid;
-    }
-
-    public function setUuid(Uuid $uuid): self
-    {
-        $this->uuid = $uuid;
-
-        return $this;
-    }
-
-    public function getCreatedAt(): ?DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(DateTimeImmutable $createdAt): self
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    public function getUpdatedAt(): ?DateTimeInterface
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(DateTimeInterface $updatedAt): self
-    {
-        $this->updatedAt = $updatedAt;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Ticket>
-     */
+    /** @return Collection<int, Ticket> */
     public function getTickets(): Collection
     {
         return $this->tickets;

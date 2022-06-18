@@ -2,6 +2,12 @@
 
 namespace App\Entity;
 
+use App\Entity\Trait\CreatedAtTrait;
+use App\Entity\Trait\EnabledTrait;
+use App\Entity\Trait\SlugTrait;
+use App\Entity\Trait\UpdatedAtTrait;
+use App\Entity\Trait\UuidTrait;
+use App\Helper\DateTimeHelpers;
 use App\Repository\UserRepository;
 use DateTimeImmutable;
 use DateTimeInterface;
@@ -14,8 +20,15 @@ use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
+#[ORM\HasLifecycleCallbacks]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    use EnabledTrait;
+    use UuidTrait;
+    use SlugTrait;
+    use CreatedAtTrait;
+    use UpdatedAtTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
@@ -52,23 +65,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', length: 15)]
     private string $phone;
 
-    #[ORM\Column(type: 'boolean')]
-    private bool $enabled = true;
-
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
     private ?DateTimeImmutable $blockedAt = null;
-
-    #[ORM\Column(type: 'datetime_immutable')]
-    private DateTimeImmutable $createdAt;
-
-    #[ORM\Column(type: 'datetime')]
-    private DateTimeInterface $updatedAt;
-
-    #[ORM\Column(type: 'string', length: 255, unique: true)]
-    private string $slug;
-
-    #[ORM\Column(type: 'uuid', unique: true)]
-    private Uuid $uuid;
 
     /** @var Collection<int, Ticket> */
     #[ORM\OneToMany(mappedBy: 'author', targetEntity: Ticket::class, orphanRemoval: true)]
@@ -97,6 +95,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->votes = new ArrayCollection();
         $this->reports = new ArrayCollection();
         $this->loginActivities = new ArrayCollection();
+        $this->uuid = Uuid::v4();
+        $this->createdAt = DateTimeHelpers::createImmutable();
+        $this->updatedAt = DateTimeHelpers::createClassic();
+    }
+
+    #[ORM\PreUpdate]
+    public function preUpdate(): void
+    {
+        $this->updatedAt = DateTimeHelpers::createClassic();
     }
 
     public function getId(): int
@@ -116,19 +123,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * A visual identifier that represents this user.
-     *
-     * @see UserInterface
-     */
     public function getUserIdentifier(): string
     {
         return (string) $this->pseudo;
     }
 
-    /**
-     * @see UserInterface
-     */
     public function getRoles(): array
     {
         $roles = $this->roles;
@@ -145,9 +144,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @see PasswordAuthenticatedUserInterface
-     */
     public function getPassword(): string
     {
         return $this->password;
@@ -160,13 +156,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @see UserInterface
-     */
     public function eraseCredentials(): void
     {
-        // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
     }
 
     public function getFirstname(): string
@@ -253,18 +244,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function isEnabled(): bool
-    {
-        return $this->enabled;
-    }
-
-    public function setEnabled(bool $enabled): self
-    {
-        $this->enabled = $enabled;
-
-        return $this;
-    }
-
     public function getBlockedAt(): ?DateTimeImmutable
     {
         return $this->blockedAt;
@@ -277,57 +256,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getCreatedAt(): DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(DateTimeImmutable $createdAt): self
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    public function getUpdatedAt(): DateTimeInterface
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(DateTimeInterface $updatedAt): self
-    {
-        $this->updatedAt = $updatedAt;
-
-        return $this;
-    }
-
-    public function getSlug(): string
-    {
-        return $this->slug;
-    }
-
-    public function setSlug(string $slug): self
-    {
-        $this->slug = $slug;
-
-        return $this;
-    }
-
-    public function getUuid(): Uuid
-    {
-        return $this->uuid;
-    }
-
-    public function setUuid(Uuid $uuid): self
-    {
-        $this->uuid = $uuid;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Ticket>
-     */
+    /** @return Collection<int, Ticket> */
     public function getTickets(): Collection
     {
         return $this->tickets;
@@ -350,9 +279,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, Comment>
-     */
+    /** @return Collection<int, Comment> */
     public function getComments(): Collection
     {
         return $this->comments;
@@ -375,9 +302,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, Vote>
-     */
+    /** @return Collection<int, Vote> */
     public function getVotes(): Collection
     {
         return $this->votes;
@@ -400,9 +325,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, Report>
-     */
+    /** @return Collection<int, Report> */
     public function getReports(): Collection
     {
         return $this->reports;
@@ -425,9 +348,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, LoginActivity>
-     */
+    /** @return Collection<int, LoginActivity> */
     public function getLoginActivities(): Collection
     {
         return $this->loginActivities;

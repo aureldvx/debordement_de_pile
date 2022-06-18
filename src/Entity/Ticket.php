@@ -2,6 +2,13 @@
 
 namespace App\Entity;
 
+use App\Entity\Trait\CreatedAtTrait;
+use App\Entity\Trait\EnabledTrait;
+use App\Entity\Trait\SlugTrait;
+use App\Entity\Trait\TitleTrait;
+use App\Entity\Trait\UpdatedAtTrait;
+use App\Entity\Trait\UuidTrait;
+use App\Helper\DateTimeHelpers;
 use App\Repository\TicketRepository;
 use DateTimeImmutable;
 use DateTimeInterface;
@@ -12,15 +19,20 @@ use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: TicketRepository::class)]
 #[ORM\Table(name: '`ticket`')]
+#[ORM\HasLifecycleCallbacks]
 class Ticket
 {
+    use TitleTrait;
+    use UuidTrait;
+    use SlugTrait;
+    use EnabledTrait;
+    use CreatedAtTrait;
+    use UpdatedAtTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private int $id;
-
-    #[ORM\Column(type: 'string', length: 255)]
-    private string $title;
 
     #[ORM\Column(type: 'text')]
     private string $content;
@@ -32,21 +44,6 @@ class Ticket
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'tickets')]
     #[ORM\JoinColumn(nullable: false)]
     private User $author;
-
-    #[ORM\Column(type: 'boolean')]
-    private bool $enabled = true;
-
-    #[ORM\Column(type: 'datetime_immutable')]
-    private DateTimeImmutable $createdAt;
-
-    #[ORM\Column(type: 'datetime')]
-    private DateTimeInterface $updatedAt;
-
-    #[ORM\Column(type: 'string', length: 255, unique: true)]
-    private string $slug;
-
-    #[ORM\Column(type: 'uuid', unique: true)]
-    private Uuid $uuid;
 
     /** @var Collection<int, Comment> */
     #[ORM\OneToMany(mappedBy: 'ticket', targetEntity: Comment::class, orphanRemoval: true)]
@@ -65,23 +62,20 @@ class Ticket
         $this->comments = new ArrayCollection();
         $this->votes = new ArrayCollection();
         $this->reports = new ArrayCollection();
+        $this->uuid = Uuid::v4();
+        $this->createdAt = DateTimeHelpers::createImmutable();
+        $this->updatedAt = DateTimeHelpers::createClassic();
+    }
+
+    #[ORM\PreUpdate]
+    public function preUpdate(): void
+    {
+        $this->updatedAt = DateTimeHelpers::createClassic();
     }
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getTitle(): ?string
-    {
-        return $this->title;
-    }
-
-    public function setTitle(string $title): self
-    {
-        $this->title = $title;
-
-        return $this;
     }
 
     public function getContent(): ?string
@@ -120,69 +114,7 @@ class Ticket
         return $this;
     }
 
-    public function isEnabled(): ?bool
-    {
-        return $this->enabled;
-    }
-
-    public function setEnabled(bool $enabled): self
-    {
-        $this->enabled = $enabled;
-
-        return $this;
-    }
-
-    public function getCreatedAt(): ?DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(DateTimeImmutable $createdAt): self
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    public function getUpdatedAt(): ?DateTimeInterface
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(DateTimeInterface $updatedAt): self
-    {
-        $this->updatedAt = $updatedAt;
-
-        return $this;
-    }
-
-    public function getSlug(): ?string
-    {
-        return $this->slug;
-    }
-
-    public function setSlug(string $slug): self
-    {
-        $this->slug = $slug;
-
-        return $this;
-    }
-
-    public function getUuid(): Uuid
-    {
-        return $this->uuid;
-    }
-
-    public function setUuid(Uuid $uuid): self
-    {
-        $this->uuid = $uuid;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Comment>
-     */
+    /** @return Collection<int, Comment> */
     public function getComments(): Collection
     {
         return $this->comments;
@@ -205,9 +137,7 @@ class Ticket
         return $this;
     }
 
-    /**
-     * @return Collection<int, Vote>
-     */
+    /** @return Collection<int, Vote> */
     public function getVotes(): Collection
     {
         return $this->votes;
@@ -234,9 +164,7 @@ class Ticket
         return $this;
     }
 
-    /**
-     * @return Collection<int, Report>
-     */
+    /** @return Collection<int, Report> */
     public function getReports(): Collection
     {
         return $this->reports;

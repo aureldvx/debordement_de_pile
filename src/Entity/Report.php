@@ -2,14 +2,23 @@
 
 namespace App\Entity;
 
+use App\Entity\Trait\CreatedAtTrait;
+use App\Entity\Trait\EnabledTrait;
+use App\Entity\Trait\UuidTrait;
+use App\Helper\DateTimeHelpers;
 use App\Repository\ReportRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: ReportRepository::class)]
 #[ORM\Table(name: '`report`')]
 class Report
 {
+    use EnabledTrait;
+    use CreatedAtTrait;
+    use UuidTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
@@ -28,14 +37,14 @@ class Report
     #[ORM\JoinColumn(nullable: false)]
     private User $author;
 
-    #[ORM\Column(type: 'boolean')]
-    private bool $enabled = true;
-
-    #[ORM\Column(type: 'datetime_immutable')]
-    private DateTimeImmutable $createdAt;
-
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
     private ?DateTimeImmutable $resolvedAt;
+
+    public function __construct()
+    {
+        $this->uuid = Uuid::v4();
+        $this->createdAt = DateTimeHelpers::createImmutable();
+    }
 
     public function getId(): int
     {
@@ -86,30 +95,6 @@ class Report
     public function setAuthor(User $author): self
     {
         $this->author = $author;
-
-        return $this;
-    }
-
-    public function isEnabled(): bool
-    {
-        return $this->enabled;
-    }
-
-    public function setEnabled(bool $enabled): self
-    {
-        $this->enabled = $enabled;
-
-        return $this;
-    }
-
-    public function getCreatedAt(): DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(DateTimeImmutable $createdAt): self
-    {
-        $this->createdAt = $createdAt;
 
         return $this;
     }

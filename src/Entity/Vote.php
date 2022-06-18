@@ -2,7 +2,10 @@
 
 namespace App\Entity;
 
+use App\Entity\Trait\CreatedAtTrait;
+use App\Entity\Trait\EnabledTrait;
 use App\Enum\VoteType;
+use App\Helper\DateTimeHelpers;
 use App\Repository\VoteRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
@@ -11,6 +14,9 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: '`vote`')]
 class Vote
 {
+    use EnabledTrait;
+    use CreatedAtTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
@@ -29,11 +35,10 @@ class Vote
     #[ORM\JoinColumn(nullable: false)]
     private User $author;
 
-    #[ORM\Column(type: 'boolean')]
-    private bool $enabled = true;
-
-    #[ORM\Column(type: 'datetime_immutable')]
-    private DateTimeImmutable $createdAt;
+    public function __construct()
+    {
+        $this->createdAt = DateTimeHelpers::createImmutable();
+    }
 
     public function getId(): int
     {
@@ -84,30 +89,6 @@ class Vote
     public function setAuthor(User $author): self
     {
         $this->author = $author;
-
-        return $this;
-    }
-
-    public function isEnabled(): bool
-    {
-        return $this->enabled;
-    }
-
-    public function setEnabled(bool $enabled): self
-    {
-        $this->enabled = $enabled;
-
-        return $this;
-    }
-
-    public function getCreatedAt(): DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(DateTimeImmutable $createdAt): self
-    {
-        $this->createdAt = $createdAt;
 
         return $this;
     }

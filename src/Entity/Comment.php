@@ -2,7 +2,12 @@
 
 namespace App\Entity;
 
+use App\Entity\Trait\CreatedAtTrait;
+use App\Entity\Trait\EnabledTrait;
+use App\Entity\Trait\UpdatedAtTrait;
+use App\Entity\Trait\UuidTrait;
 use App\Repository\CommentRepository;
+use App\Helper\DateTimeHelpers;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -12,8 +17,14 @@ use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: CommentRepository::class)]
 #[ORM\Table(name: '`comment`')]
+#[ORM\HasLifecycleCallbacks]
 class Comment
 {
+    use EnabledTrait;
+    use UuidTrait;
+    use CreatedAtTrait;
+    use UpdatedAtTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
@@ -37,18 +48,6 @@ class Comment
     #[ORM\JoinColumn(nullable: false)]
     private User $author;
 
-    #[ORM\Column(type: 'boolean')]
-    private bool $enabled = true;
-
-    #[ORM\Column(type: 'uuid', unique: true)]
-    private Uuid $uuid;
-
-    #[ORM\Column(type: 'datetime_immutable')]
-    private DateTimeImmutable $createdAt;
-
-    #[ORM\Column(type: 'datetime')]
-    private DateTimeInterface $updatedAt;
-
     /** @var Collection<int, Vote> */
     #[ORM\OneToMany(mappedBy: 'comment', targetEntity: Vote::class)]
     private Collection $votes;
@@ -62,6 +61,15 @@ class Comment
         $this->children = new ArrayCollection();
         $this->votes = new ArrayCollection();
         $this->reports = new ArrayCollection();
+        $this->uuid = Uuid::v4();
+        $this->createdAt = DateTimeHelpers::createImmutable();
+        $this->updatedAt = DateTimeHelpers::createClassic();
+    }
+
+    #[ORM\PreUpdate]
+    public function preUpdate(): void
+    {
+        $this->updatedAt = DateTimeHelpers::createClassic();
     }
 
     public function getId(): int
@@ -105,9 +113,7 @@ class Comment
         return $this;
     }
 
-    /**
-     * @return Collection<int, self>
-     */
+    /** @return Collection<int, self> */
     public function getChildren(): Collection
     {
         return $this->children;
@@ -146,57 +152,7 @@ class Comment
         return $this;
     }
 
-    public function isEnabled(): bool
-    {
-        return $this->enabled;
-    }
-
-    public function setEnabled(bool $enabled): self
-    {
-        $this->enabled = $enabled;
-
-        return $this;
-    }
-
-    public function getUuid(): Uuid
-    {
-        return $this->uuid;
-    }
-
-    public function setUuid(Uuid $uuid): self
-    {
-        $this->uuid = $uuid;
-
-        return $this;
-    }
-
-    public function getCreatedAt(): DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(DateTimeImmutable $createdAt): self
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    public function getUpdatedAt(): DateTimeInterface
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(DateTimeInterface $updatedAt): self
-    {
-        $this->updatedAt = $updatedAt;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Vote>
-     */
+    /** @return Collection<int, Vote> */
     public function getVotes(): Collection
     {
         return $this->votes;
@@ -223,9 +179,7 @@ class Comment
         return $this;
     }
 
-    /**
-     * @return Collection<int, Report>
-     */
+    /** @return Collection<int, Report> */
     public function getReports(): Collection
     {
         return $this->reports;
