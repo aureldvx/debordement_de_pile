@@ -1,0 +1,24 @@
+<nav class="py-2 bg-light border-bottom">
+    <div class="container d-flex flex-wrap justify-content-center justify-content-md-between">
+        <ul class="nav me-md-auto justify-content-center justify-content-md-start">
+            <li class="nav-item"><a href="#" class="nav-link link-dark px-2 active">Catégories</a></li>
+            <li class="nav-item"><a href="#" class="nav-link link-dark px-2">Populaires</a></li>
+            <li class="nav-item"><a href="#" class="nav-link link-dark px-2">Tickets</a></li>
+        </ul>
+        <ul class="nav gap-2">
+            <li class="nav-item"><a href="#" class="btn btn-outline-primary">Connexion</a></li>
+            <li class="nav-item"><a href="#" class="btn btn-primary">Inscription</a></li>
+        </ul>
+    </div>
+</nav>
+<header class="py-3 mb-4 border-bottom">
+    <div class="container d-flex flex-wrap justify-content-center">
+        <a href="{{ path('public_home') }}" class="d-flex align-items-center mb-3 mb-lg-0 me-lg-auto text-dark text-decoration-none gap-3">
+            <img src="{{ asset('build/images/favicon.png') }}" alt="" width="40" height="40">
+            <span class="fs-4">Débordement de Pile</span>
+        </a>
+        <form class="col-12 col-lg-auto mb-3 mb-lg-0" role="search">
+            <input type="search" class="form-control" placeholder="Rechercher..." aria-label="Rechercher">
+        </form>
+    </div>
+</header>

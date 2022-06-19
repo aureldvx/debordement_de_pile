@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="d-flex">
+        {% include 'admin/_partials/_sidebar.html.twig' %}
+        <div class="flex-grow-1 p-3">
+            <main>
+                {% block main %}{% endblock %}
+            </main>
+            {% include 'admin/_partials/_footer.html.twig' %}
+        </div>
+    </div>
+{% endblock %}
