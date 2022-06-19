@@ -15,6 +15,7 @@ class EditPasswordType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->setMethod('PATCH')
             ->add('password', PasswordType::class, [
                 'label' => 'Mot de passe actuel',
                 'required' => true,

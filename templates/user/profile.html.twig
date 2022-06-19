@@ -1,48 +1,82 @@
 {% extends 'public/public.html.twig' %}
 
-{% block title 'Modifier votre profil' %}
+{% block title %}Profil de {{ user.pseudo }}{% endblock %}
 
 {% block main %}
-    <h1 class="mb-5">Modifier votre profil</h1>
+    <div class="d-flex justify-content-between align-items-center flex-wrap mb-5">
+        <h1 class="lh-1">Profil de : {{ user.pseudo }}</h1>
 
-    <fieldset class="mb-5">
-        <legend class="mb-3">Changer de pseudo</legend>
-        {{ form_start(pseudo_form) }}
+        {% if app.user.pseudo is same as user.pseudo %}
+            <a href="{{ path('user_edit_profile') }}" class="btn btn-primary">Modifier mon profil</a>
+        {% endif %}
+    </div>
 
-        {{ form_row(pseudo_form.pseudo) }}
-        {{ form_row(pseudo_form.password) }}
-
-        {{ form_rest(pseudo_form) }}
-        <button type="submit" class="btn btn-primary">Mettre à jour mon pseudo</button>
-        {{ form_end(pseudo_form) }}
-    </fieldset>
-
-    <fieldset class="mb-5">
-        <legend class="mb-3">Changer de mot de passe</legend>
-        {{ form_start(password_form) }}
-
-        {{ form_row(password_form.password) }}
-        {{ form_row(password_form.newPassword) }}
-
-        {{ form_rest(password_form) }}
-        <button type="submit" class="btn btn-primary">Mettre à jour mon mot de passe</button>
-        {{ form_end(password_form) }}
-    </fieldset>
-
-    <fieldset class="mb-5">
-        <legend class="mb-3">Modifier vos informations personnelles</legend>
-        {{ form_start(personal_data_form) }}
-
-        {{ form_row(personal_data_form.firstname) }}
-        {{ form_row(personal_data_form.lastname) }}
-        {{ form_row(personal_data_form.email) }}
-        {{ form_row(personal_data_form.phone) }}
-        {{ form_row(personal_data_form.address) }}
-        {{ form_row(personal_data_form.postalCode) }}
-        {{ form_row(personal_data_form.city) }}
-
-        {{ form_rest(personal_data_form) }}
-        <button type="submit" class="btn btn-primary">Mettre à jour mes informations</button>
-        {{ form_end(personal_data_form) }}
-    </fieldset>
+    <div class="row gx-5">
+        <div class="col-12 col-md-6 vstack gap-5 align-self-start">
+            <div class="vstack gap-2 align-self-start w-100">
+                <h2>Derniers tickets ouverts</h2>
+                {% if user.tickets.count <= 0 %}
+                    <div class="alert alert-secondary" role="alert">
+                        Aucun ticket ouvert par cet utilisateur.
+                    </div>
+                {% else %}
+                    <div class="vstack gap-2">
+                        {% for ticket in user.tickets[0:10] %}
+                            <a href="{{ path('tickets_show', { slug: ticket.slug }) }}" class="vstack p-2 rounded-2 border border-1 text-decoration-none">
+                                <span>{{ ticket.title[0:100] | u.truncate(95, '...') }}</span>
+                                <small class="text-muted">Ticket créé le <span data-intl-date="{{ ticket.createdAt | date('Y-m-d H:i:s') }}"></span></small>
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="vstack gap-2 align-self-start w-100">
+                <h2>Derniers commentaires ajoutés</h2>
+                {% if user.comments.count <= 0 %}
+                    <div class="alert alert-secondary" role="alert">
+                        Aucun commentaire créé par cet utilisateur.
+                    </div>
+                {% else %}
+                    {% for comment in user.comments[0:10] %}
+                        <a href="{{ path('tickets_show', { slug: comment.ticket.slug, _fragment: comment.uuid }) }}" class="vstack p-2 rounded-2 border border-1 text-decoration-none">
+                            <span>{{ comment.content[0:100] | u.truncate(95, '...') }}</span>
+                            <small class="text-muted">Commentaire écrit le <span data-intl-date="{{ comment.createdAt | date('Y-m-d H:i:s') }}"></span></small>
+                        </a>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-12 col-md-6 vstack gap-2 align-self-start">
+            <h2>Derniers votes</h2>
+            {% if user.votes.count <= 0 %}
+                <div class="alert alert-secondary" role="alert">
+                    Aucun vote ajouté par cet utilisateur.
+                </div>
+            {% else %}
+                {% for vote in user.votes[0:10] %}
+                    {% if vote.ticket is not null %}
+                        <a href="{{ path('tickets_show', { slug: vote.ticket.slug }) }}" class="vstack p-2 rounded-2 border border-1 text-decoration-none">
+                            <span>{{ vote.ticket.title[0:100] | u.truncate(95, '...') }}</span>
+                            <small class="text-muted">Vote ajouté le <span data-intl-date="{{ vote.createdAt | date('Y-m-d H:i:s') }}"></span></small>
+                            {% if vote.type.value == 0 %}
+                                <span class="badge rounded-pill text-bg-success text-uppercase w-max-content py-2 px-4 lh-1 mt-2">Upvote</span>
+                            {% else %}
+                                <span class="badge rounded-pill text-bg-warning text-uppercase w-max-content py-2 px-4 lh-1 mt-2">Downvote</span>
+                            {% endif %}
+                        </a>
+                    {% elseif vote.comment is not null %}
+                        <a href="{{ path('tickets_show', { slug: vote.comment.ticket.slug, _fragment: vote.comment.uuid }) }}" class="vstack p-2 rounded-2 border border-1 text-decoration-none">
+                            <span>{{ vote.comment.content[0:100] | u.truncate(95, '...') }}</span>
+                            <small class="text-muted">Vote ajouté le <span data-intl-date="{{ vote.createdAt | date('Y-m-d H:i:s') }}"></span></small>
+                            {% if vote.type.value == 0 %}
+                                <span class="badge rounded-pill text-bg-success text-uppercase w-max-content py-2 px-4 lh-1 mt-2">Upvote</span>
+                            {% else %}
+                                <span class="badge rounded-pill text-bg-warning text-uppercase w-max-content py-2 px-4 lh-1 mt-2">Downvote</span>
+                            {% endif %}
+                        </a>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
 {% endblock %}

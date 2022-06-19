@@ -11,7 +11,7 @@
                 <li class="nav-item"><a href="{{ path('auth_signup') }}" class="btn btn-primary">Inscription</a></li>
             {% else %}
                 <li class="nav-item">
-                    <a href="{{ path('user_edit_profile') }}" class="btn btn-primary d-inline-flex gap-2 align-items-center">
+                    <a href="{{ path('user_profile_by_slug', { slug: app.user.slug }) }}" class="btn btn-primary d-inline-flex gap-2 align-items-center">
                         <svg class="bi" width="20" height="20" role="img" aria-label="Profil"><use xlink:href="#person"></use></svg>
                         Mon profil
                     </a>

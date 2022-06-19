@@ -37,7 +37,7 @@ class UserFixtures extends AbstractFixture
                 ->setEmail($this->faker->safeEmail())
                 ->setFirstname($firstname)
                 ->setLastname($lastname)
-                ->setSlug($this->slugger->slug($firstname.' '.$lastname)->lower())
+                ->setSlug($this->slugger->slug($pseudo)->lower())
                 ->setAddress($this->faker->streetAddress())
                 ->setPostalCode($this->faker->postcode())
                 ->setCity($this->faker->city())

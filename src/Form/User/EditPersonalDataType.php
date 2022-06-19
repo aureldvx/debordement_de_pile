@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Form\Security;
+namespace App\Form\User;
 
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
@@ -17,6 +17,7 @@ class EditPersonalDataType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->setMethod('PATCH')
             ->add('firstname', TextType::class, [
                 'label' => 'Prénom',
                 'required' => true,

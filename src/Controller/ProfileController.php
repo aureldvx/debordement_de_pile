@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Controller\User;
+namespace App\Controller;
 
 use App\Entity\User;
-use App\Form\Security\EditPersonalDataType;
 use App\Form\User\EditPasswordType;
+use App\Form\User\EditPersonalDataType;
 use App\Form\User\EditPseudoType;
 use App\Repository\UserRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -16,7 +16,6 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route(path: '/u', name: 'user_')]
-#[IsGranted('ROLE_USER')]
 class ProfileController extends AbstractController
 {
     public function __construct(
@@ -25,7 +24,8 @@ class ProfileController extends AbstractController
     ) {
     }
 
-    #[Route(path: '/', name: 'edit_profile')]
+    #[IsGranted('ROLE_USER')]
+    #[Route(path: '/', name: 'edit_profile', methods: ['GET', 'PATCH'])]
     public function editProfile(Request $request): Response
     {
         /** @var User $user */
@@ -35,10 +35,18 @@ class ProfileController extends AbstractController
         $passwordForm = $this->handlePasswordForm($request, $user);
         $personalDataForm = $this->handlePersonalDataForm($request, $user);
 
-        return $this->renderForm('user/profile.html.twig', [
+        return $this->renderForm('user/edit-profile.html.twig', [
             'pseudo_form' => $pseudoForm,
             'password_form' => $passwordForm,
             'personal_data_form' => $personalDataForm,
+        ]);
+    }
+
+    #[Route(path: '/{slug}', name: 'profile_by_slug', methods: ['GET'])]
+    public function viewProfile(User $user): Response
+    {
+        return $this->render('user/profile.html.twig', [
+            'user' => $user,
         ]);
     }
 

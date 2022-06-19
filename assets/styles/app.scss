@@ -7,3 +7,7 @@ label.required::after {
     color: red;
     margin-inline-start: 4px;
 }
+
+.w-max-content {
+    width: min-content !important;
+}
