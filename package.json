@@ -19,6 +19,7 @@
         "build": "encore production --progress"
     },
     "dependencies": {
+        "@popperjs/core": "^2.11.5",
         "alpinejs": "^3.10.2",
         "bootstrap": "^5.2.0-beta1"
     }
