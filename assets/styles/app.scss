@@ -1,2 +1,9 @@
 @charset "UTF-8";
 @import 'bootstrap';
+
+
+label.required::after {
+    content: '*';
+    color: red;
+    margin-inline-start: 4px;
+}

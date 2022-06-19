@@ -1,0 +1,32 @@
+{% extends 'public/public.html.twig' %}
+
+{% block title 'Connexion' %}
+
+{% block main %}
+    {% if error %}
+        <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+    {% endif %}
+
+    <h1 class="mb-3">Connexion</h1>
+
+    <form action="{{ path('auth_login') }}" method="post">
+        <div class="mb-3">
+            <label for="username" class="form-label required">Pseudo</label>
+            <input type="text" required class="form-control" id="username" name="_username" placeholder="kikou13" value="{{ last_username }}"/>
+        </div>
+
+        <div class="mb-3">
+            <label for="password" class="form-label required">Mot de passe</label>
+            <input type="password" required class="form-control" id="password" name="_password"/>
+        </div>
+
+        <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox" id="remember_me" name="_remember_me">
+            <label class="form-check-label" for="remember_me">Rester connecté pendant une semaine</label>
+        </div>
+
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+        <button type="submit" class="btn btn-primary">Se connecter</button>
+    </form>
+{% endblock %}

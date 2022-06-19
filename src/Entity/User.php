@@ -13,13 +13,18 @@ use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[ORM\HasLifecycleCallbacks]
+#[UniqueEntity('pseudo', message: 'Votre pseudo est déjà utilisé par un autre utilisateur.')]
+#[UniqueEntity('slug')]
+#[UniqueEntity('uuid')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     use EnabledTrait;
@@ -33,6 +38,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'integer')]
     private int $id;
 
+    #[Assert\Length(
+        min: 4,
+        max: 180,
+        minMessage: 'Votre pseudo doit comprendre au moins {{ limit }} caractères.',
+        maxMessage: 'Votre pseudo doit comprendre au maximum {{ limit }} caractères.'
+    )]
     #[ORM\Column(type: 'string', length: 180, unique: true)]
     private string $pseudo;
 
@@ -43,24 +54,61 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string')]
     private string $password;
 
+    #[Assert\Length(
+        min: 2,
+        max: 100,
+        minMessage: 'Votre prénom doit comprendre au moins {{ limit }} caractères.',
+        maxMessage: 'Votre prénom doit comprendre au maximum {{ limit }} caractères.'
+    )]
     #[ORM\Column(type: 'string', length: 100)]
     private string $firstname;
 
+    #[Assert\Length(
+        min: 2,
+        max: 100,
+        minMessage: 'Votre nom doit comprendre au moins {{ limit }} caractères.',
+        maxMessage: 'Votre nom doit comprendre au maximum {{ limit }} caractères.'
+    )]
     #[ORM\Column(type: 'string', length: 100)]
     private string $lastname;
 
     #[ORM\Column(type: 'string', length: 255)]
     private string $address;
 
+    #[Assert\Length(
+        min: 2,
+        max: 10,
+        minMessage: 'Votre code postal doit comprendre au moins {{ limit }} caractères.',
+        maxMessage: 'Votre code postal doit comprendre au maximum {{ limit }} caractères.'
+    )]
     #[ORM\Column(type: 'string', length: 10)]
     private string $postalCode;
 
-    #[ORM\Column(type: 'string', length: 100)]
+    #[Assert\Length(
+        min: 2,
+        max: 200,
+        minMessage: 'Votre ville doit comprendre au moins {{ limit }} caractères.',
+        maxMessage: 'Votre ville doit comprendre au maximum {{ limit }} caractères.'
+    )]
+    #[ORM\Column(type: 'string', length: 200)]
     private string $city;
 
+    #[Assert\Email]
+    #[Assert\Length(
+        min: 2,
+        max: 200,
+        minMessage: 'Votre email doit comprendre au moins {{ limit }} caractères.',
+        maxMessage: 'Votre email doit comprendre au maximum {{ limit }} caractères.'
+    )]
     #[ORM\Column(type: 'string', length: 200)]
     private string $email;
 
+    #[Assert\Length(
+        min: 10,
+        max: 20,
+        minMessage: 'Votre numéro de téléphone doit comprendre au moins {{ limit }} caractères.',
+        maxMessage: 'Votre numéro de téléphone doit comprendre au maximum {{ limit }} caractères.'
+    )]
     #[ORM\Column(type: 'string', length: 20)]
     private string $phone;
 

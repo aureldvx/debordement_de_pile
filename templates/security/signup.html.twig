@@ -1,0 +1,31 @@
+{% extends 'public/public.html.twig' %}
+
+{% block title 'Inscription' %}
+
+{% block main %}
+    <h1 class="mb-5">Inscription</h1>
+
+    {{ form_start(signup_form) }}
+
+    <fieldset class="mb-5">
+        <legend class="mb-3">Identifiants de connexion</legend>
+        {{ form_row(signup_form.pseudo) }}
+        {{ form_row(signup_form.password) }}
+    </fieldset>
+
+    <fieldset class="mb-5">
+        <legend class="mb-3">Informations personnelles</legend>
+        {{ form_row(signup_form.firstname) }}
+        {{ form_row(signup_form.lastname) }}
+        {{ form_row(signup_form.email) }}
+        {{ form_row(signup_form.phone) }}
+        {{ form_row(signup_form.address) }}
+        {{ form_row(signup_form.postalCode) }}
+        {{ form_row(signup_form.city) }}
+    </fieldset>
+
+    {{ form_rest(signup_form) }}
+    <button type="submit" class="btn btn-primary">S'inscrire</button>
+    {{ form_end(signup_form) }}
+
+{% endblock %}
