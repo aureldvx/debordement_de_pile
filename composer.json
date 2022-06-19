@@ -14,14 +14,18 @@
         "symfony/console": "6.1.*",
         "symfony/dotenv": "6.1.*",
         "symfony/flex": "^2",
+        "symfony/form": "6.1.*",
         "symfony/framework-bundle": "6.1.*",
         "symfony/proxy-manager-bridge": "6.1.*",
         "symfony/runtime": "6.1.*",
         "symfony/security-bundle": "6.1.*",
+        "symfony/security-core": "6.1.*",
+        "symfony/security-csrf": "6.1.*",
         "symfony/uid": "6.1.*",
         "symfony/validator": "6.1.*",
         "symfony/webpack-encore-bundle": "^1.14",
-        "symfony/yaml": "6.1.*"
+        "symfony/yaml": "6.1.*",
+        "twig/extra-bundle": "^3.4"
     },
     "config": {
         "allow-plugins": {
