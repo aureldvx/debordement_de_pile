@@ -1,0 +1,48 @@
+{% extends 'public/public.html.twig' %}
+
+{% block title 'Modifier votre profil' %}
+
+{% block main %}
+    <h1 class="mb-5">Modifier votre profil</h1>
+
+    <fieldset class="mb-5">
+        <legend class="mb-3">Changer de pseudo</legend>
+        {{ form_start(pseudo_form) }}
+
+        {{ form_row(pseudo_form.pseudo) }}
+        {{ form_row(pseudo_form.password) }}
+
+        {{ form_rest(pseudo_form) }}
+        <button type="submit" class="btn btn-primary">Mettre à jour mon pseudo</button>
+        {{ form_end(pseudo_form) }}
+    </fieldset>
+
+    <fieldset class="mb-5">
+        <legend class="mb-3">Changer de mot de passe</legend>
+        {{ form_start(password_form) }}
+
+        {{ form_row(password_form.password) }}
+        {{ form_row(password_form.newPassword) }}
+
+        {{ form_rest(password_form) }}
+        <button type="submit" class="btn btn-primary">Mettre à jour mon mot de passe</button>
+        {{ form_end(password_form) }}
+    </fieldset>
+
+    <fieldset class="mb-5">
+        <legend class="mb-3">Modifier vos informations personnelles</legend>
+        {{ form_start(personal_data_form) }}
+
+        {{ form_row(personal_data_form.firstname) }}
+        {{ form_row(personal_data_form.lastname) }}
+        {{ form_row(personal_data_form.email) }}
+        {{ form_row(personal_data_form.phone) }}
+        {{ form_row(personal_data_form.address) }}
+        {{ form_row(personal_data_form.postalCode) }}
+        {{ form_row(personal_data_form.city) }}
+
+        {{ form_rest(personal_data_form) }}
+        <button type="submit" class="btn btn-primary">Mettre à jour mes informations</button>
+        {{ form_end(personal_data_form) }}
+    </fieldset>
+{% endblock %}

@@ -3,6 +3,21 @@
 {% block body %}
     {% include 'public/_partials/_header.html.twig' %}
     <main class="container">
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+        {% for message in app.flashes('warning') %}
+            <div class="alert alert-warning" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
         {% block main %}{% endblock %}
     </main>
     {% include 'public/_partials/_footer.html.twig' %}

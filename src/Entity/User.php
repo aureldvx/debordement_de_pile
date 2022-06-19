@@ -22,7 +22,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[ORM\HasLifecycleCallbacks]
-#[UniqueEntity('pseudo', message: 'Votre pseudo est déjà utilisé par un autre utilisateur.')]
+#[UniqueEntity('pseudo', message: 'Ce pseudo est déjà utilisé par un autre utilisateur.')]
 #[UniqueEntity('slug')]
 #[UniqueEntity('uuid')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
