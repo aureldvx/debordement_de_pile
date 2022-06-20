@@ -50,6 +50,21 @@ class ProfileController extends AbstractController
         ]);
     }
 
+    #[Route(path: '/{slug}', name: 'close_account', methods: ['DELETE'])]
+    public function closeProfile(User $user): Response
+    {
+        if ($this->isGranted('CLOSE_ACCOUNT', $user)) {
+            $user->setEnabled(false);
+            $this->userRepository->add($user, true);
+
+            return $this->redirectToRoute('auth_logout');
+        }
+
+        $this->addFlash('error', 'Vous n\'avez pas les droits pour supprimer ce profil.');
+
+        return $this->redirectToRoute('user_edit_profile', ['slug' => $user->getSlug()]);
+    }
+
     private function handlePseudoForm(Request $request, User $user): FormInterface
     {
         $updatePseudoForm = $this

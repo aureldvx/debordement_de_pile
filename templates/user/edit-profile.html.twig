@@ -45,4 +45,31 @@
         <button type="submit" class="btn btn-primary">Mettre à jour mes informations</button>
         {{ form_end(personal_data_form) }}
     </fieldset>
+
+    <fieldset class="mb-5 p-3 rounded-2 border border-2 border-danger">
+        <legend class="mb-3 text-danger">Zone dangereuse</legend>
+        <p>Vous pouvez supprimer définitivement votre compte sur notre site en cliquant sur le bouton ci-dessous.</p>
+        <button type="submit" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#closeAccountModal">Supprimer définitivement mon compte</button>
+    </fieldset>
+
+    <div class="modal fade" id="closeAccountModal" tabindex="-1" aria-labelledby="closeAccountModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="closeAccountModal">Supprimer mon compte</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Êtes-vous sûr(e) de vouloir définitivement supprimer votre compte utilisateur ? Cette action est irréversible.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler et revenir à mon profil</button>
+                    <form action="{{ path('user_close_account', { slug: app.user.slug }) }}" method="post" class="mt-2">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <button type="submit" class="btn btn-danger">Supprimer mon compte</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
