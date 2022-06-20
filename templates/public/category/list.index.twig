@@ -5,10 +5,12 @@
 {% block main %}
     <div class="d-flex flex-wrap justify-content-center justify-content-md-between align-items-center">
         <h1 class="lh-1">Catégories</h1>
-        <a href="{{ path('categories_create') }}" class="btn btn-primary d-inline-flex gap-2 align-items-center align-self-start">
-            <svg class="bi" width="18" height="18" role="img" aria-label="Ajouter"><use xlink:href="#plus-circle"></use></svg>
-            Créer
-        </a>
+        {% if is_granted('ROLE_ADMIN') %}
+            <a href="{{ path('categories_create') }}" class="btn btn-success d-inline-flex gap-2 align-items-center align-self-start">
+                <svg class="bi" width="18" height="18" role="img" aria-label="Ajouter"><use xlink:href="#plus-circle"></use></svg>
+                Créer
+            </a>
+        {% endif %}
     </div>
 
     <ul class="list-group mt-4">

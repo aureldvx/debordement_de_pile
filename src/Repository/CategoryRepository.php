@@ -42,7 +42,6 @@ class CategoryRepository extends ServiceEntityRepository
         }
     }
 
-
     /**
      * @return Category[]
      */
