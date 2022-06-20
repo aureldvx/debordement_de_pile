@@ -1,0 +1,15 @@
+{% extends 'public/public.html.twig' %}
+
+{% block title 'Modifier une catégorie' %}
+
+{% block main %}
+    <h1 class="mb-4">Modifier la catégorie : {{ category.title }}</h1>
+
+    {{ form_start(category_form) }}
+
+    {{ form_row(category_form.title) }}
+
+    {{ form_rest(category_form) }}
+    <button type="submit" class="btn btn-primary mt-2">Mettre à jour la catégorie</button>
+    {{ form_end(category_form) }}
+{% endblock %}

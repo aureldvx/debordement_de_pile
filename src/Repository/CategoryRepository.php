@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Category;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -39,5 +40,18 @@ class CategoryRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+
+    /**
+     * @return Category[]
+     */
+    public function getAll(): array
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.enabled = true')
+            ->orderBy('c.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
     }
 }
