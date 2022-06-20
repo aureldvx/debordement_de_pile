@@ -35,6 +35,9 @@ class Ticket
     #[ORM\Column(type: 'text')]
     private string $content;
 
+    #[ORM\Column(type: 'boolean')]
+    private bool $closed = false;
+
     #[ORM\ManyToOne(targetEntity: Category::class, cascade: ['persist'], inversedBy: 'tickets')]
     #[ORM\JoinColumn(nullable: false)]
     private Category $category;
@@ -84,6 +87,18 @@ class Ticket
     public function setContent(string $content): self
     {
         $this->content = $content;
+
+        return $this;
+    }
+
+    public function isClosed(): bool
+    {
+        return $this->closed;
+    }
+
+    public function setClosed(bool $closed): self
+    {
+        $this->closed = $closed;
 
         return $this;
     }
