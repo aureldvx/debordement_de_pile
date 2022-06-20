@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Category;
 use App\Entity\Ticket;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -39,5 +40,20 @@ class TicketRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    /**
+     * @return Ticket[]
+     */
+    public function findByCategory(Category $category): array
+    {
+        return $this
+            ->createQueryBuilder('t')
+            ->where('t.enabled = true')
+            ->andWhere('t.category = :category')
+            ->orderBy('t.createdAt', 'DESC')
+            ->setParameter('category', $category)
+            ->getQuery()
+            ->getResult();
     }
 }

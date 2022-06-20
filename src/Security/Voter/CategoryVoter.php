@@ -24,9 +24,6 @@ class CategoryVoter extends Voter
         /** @var User $authUser */
         $authUser = $token->getUser();
 
-        /** @var Category $category */
-        $category = $subject;
-
         if (!$authUser instanceof UserInterface) {
             return false;
         }
@@ -35,6 +32,6 @@ class CategoryVoter extends Voter
             return true;
         }
 
-        return $authUser === $category->getUpdatedBy() || $authUser === $category->getCreatedBy();
+        return false;
     }
 }

@@ -1,0 +1,69 @@
+{% extends 'public/public.html.twig' %}
+
+{% block title %}Catégorie {{ category.title }}{% endblock %}
+
+{% block main %}
+    <div class="d-flex flex-wrap justify-content-center justify-content-md-between align-items-center mb-4">
+        <h1 class="lh-1">{{ category.title }}</h1>
+        <div class="d-flex justify-content-end gap-2">
+            {% if is_granted('EDIT_CATEGORY', category) %}
+                <a href="{{ path('categories_edit', { uuid: category.uuid }) }}" class="btn btn-primary d-inline-flex gap-2 align-items-center align-self-start">
+                    <svg class="bi" width="18" height="18" role="img" aria-label="Modifier"><use xlink:href="#pen"></use></svg>
+                    Modifier
+                </a>
+            {% endif %}
+            {% if is_granted('DELETE_CATEGORY', category) %}
+                <button class="btn btn-danger d-inline-flex gap-2 align-items-center align-self-start" data-bs-toggle="modal" data-bs-target="#deleteCategoryModal">
+                    <svg class="bi" width="18" height="18" role="img" aria-label="Supprimer"><use xlink:href="#trash"></use></svg>
+                    Supprimer
+                </button>
+
+                <div class="modal fade" id="deleteCategoryModal" tabindex="-1" aria-labelledby="deleteCategoryModal" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="deleteCategoryModal">Supprimer la catégorie {{ category.title }}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Êtes-vous sûr(e) de vouloir définitivement supprimer cette catégorie ? Cette action est irréversible.</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler la suppression</button>
+                                <form action="{{ path('categories_delete', { uuid: category.uuid }) }}" method="post">
+                                    <input type="hidden" name="_method" value="DELETE">
+                                    <button class="btn btn-danger">Confirmer la suppression</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if tickets | length <= 0 %}
+        <div class="alert alert-secondary" role="alert">
+            Aucun ticket dans cette catégorie pour l'instant.
+        </div>
+    {% else %}
+        <div class="list-group w-100">
+            {% for ticket in tickets %}
+                <a href="{{ path('tickets_show', { slug: ticket.slug }) }}" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
+                    {% if ticket.closed %}
+                        <div class="rounded-circle flex-shrink-0 bg-black bg-opacity-10 d-flex align-items-center justify-content-center" style="block-size: 40px; inline-size: 40px;">
+                            <svg class="bi text-black" width="18" height="18" role="img" aria-label="Verrouillé"><use xlink:href="#key"></use></svg>
+                        </div>
+                    {% endif %}
+                    <div class="d-flex gap-4 w-100 justify-content-between">
+                        <div>
+                            <h6 class="mb-1">{{ ticket.title }}</h6>
+                            <p class="mb-0 opacity-75">{{ ticket.content[0:300] | u.truncate(295, '...') }}</p>
+                        </div>
+                        <small class="opacity-50 text-nowrap" data-intl-date="{{ ticket.createdAt | date('Y-m-d H:i:s') }}"></small>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}
