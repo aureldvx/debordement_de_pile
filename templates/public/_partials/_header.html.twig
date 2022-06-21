@@ -3,7 +3,7 @@
         <ul class="nav me-md-auto justify-content-center justify-content-md-start">
             <li class="nav-item"><a href="{{ path('categories_list') }}" class="nav-link link-dark px-2 active">Catégories</a></li>
             <li class="nav-item"><a href="#" class="nav-link link-dark px-2">Populaires</a></li>
-            <li class="nav-item"><a href="#" class="nav-link link-dark px-2">Tickets</a></li>
+            <li class="nav-item"><a href="{{ path('tickets_list') }}" class="nav-link link-dark px-2">Tickets</a></li>
         </ul>
         <ul class="nav gap-2">
             {% if is_granted('ROLE_ADMIN') %}

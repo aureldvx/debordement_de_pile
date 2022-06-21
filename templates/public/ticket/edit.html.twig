@@ -1,0 +1,17 @@
+{% extends 'public/public.html.twig' %}
+
+{% block title 'Modifier un ticket' %}
+
+{% block main %}
+    <h1 class="mb-4">Modifier le ticket : {{ ticket.title }}</h1>
+
+    {{ form_start(ticket_form) }}
+
+    {{ form_row(ticket_form.title) }}
+    {{ form_row(ticket_form.content) }}
+    {{ form_row(ticket_form.category) }}
+
+    {{ form_rest(ticket_form) }}
+    <button type="submit" class="btn btn-primary mt-2">Mettre à jour le ticket</button>
+    {{ form_end(ticket_form) }}
+{% endblock %}

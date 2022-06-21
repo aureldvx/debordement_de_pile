@@ -1,0 +1,37 @@
+{% extends 'public/public.html.twig' %}
+
+{% block title 'Tickets publiés' %}
+
+{% block main %}
+    <div class="d-flex flex-wrap justify-content-center justify-content-md-between align-items-center">
+        <h1 class="lh-1">Tickets publiés</h1>
+        {% if is_granted('ROLE_USER') %}
+            <a href="{{ path('tickets_create') }}" class="btn btn-success d-inline-flex gap-2 align-items-center align-self-start">
+                <svg class="bi" width="18" height="18" role="img" aria-label="Ajouter"><use xlink:href="#plus-circle"></use></svg>
+                Créer
+            </a>
+        {% endif %}
+    </div>
+
+    <ul class="list-group mt-4">
+        {% for ticket in tickets %}
+            <li class="list-group-item d-flex justify-content-between align-items-baseline flex-wrap">
+                <a href="{{ path('tickets_show', { slug: ticket.slug }) }}" class="text-decoration-none">{{ ticket.title }}</a>
+                <small class="text-muted">{{ ticket.enabledComments | length }} commentaire(s)</small>
+            </li>
+        {% endfor %}
+
+        {% if (previous >= 0) or (next < tickets|length) %}
+            <nav aria-label="Pagination des tickets" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    {% if previous >= 0 %}
+                        <li class="page-item"><a class="page-link" href="{{ path('tickets_list', { offset: previous }) }}">Précédents</a></li>
+                    {% endif %}
+                    {% if next < tickets|length %}
+                        <li class="page-item"><a class="page-link" href="{{ path('tickets_list', { offset: next }) }}">Suivants</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
+    </ul>
+{% endblock %}

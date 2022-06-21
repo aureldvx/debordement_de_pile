@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Category;
 use App\Entity\Ticket;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -19,6 +20,8 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class TicketRepository extends ServiceEntityRepository
 {
+    public const PAGINATOR_TICKETS_PER_PAGE = 20;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Ticket::class);
@@ -45,6 +48,25 @@ class TicketRepository extends ServiceEntityRepository
     /**
      * @return Ticket[]
      */
+    public function getAll(bool $withClosed = true): array
+    {
+        $builder = $this
+            ->createQueryBuilder('t')
+            ->where('t.enabled = true')
+            ->orderBy('t.createdAt', 'DESC');
+
+        if (!$withClosed) {
+            $builder->andWhere('t.closed = false');
+        }
+
+        return $builder
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return Ticket[]
+     */
     public function findByCategory(Category $category): array
     {
         return $this
@@ -55,5 +77,29 @@ class TicketRepository extends ServiceEntityRepository
             ->setParameter('category', $category)
             ->getQuery()
             ->getResult();
+    }
+
+    /** @return Paginator<Ticket> */
+    public function getTicketsPaginator(int $offset, ?Category $category = null, bool $withClosed = true): Paginator
+    {
+        $builder = $this
+            ->createQueryBuilder('t')
+            ->where('t.enabled = true')
+            ->orderBy('t.createdAt', 'DESC')
+            ->setMaxResults(self::PAGINATOR_TICKETS_PER_PAGE)
+            ->setFirstResult($offset);
+
+        if ($category) {
+            $builder->andWhere('t.category = :category');
+            $builder->setParameter('category', $category);
+        }
+
+        if (!$withClosed) {
+            $builder->andWhere('t.closed = false');
+        }
+
+        $query = $builder->getQuery();
+
+        return new Paginator($query);
     }
 }

@@ -12,6 +12,7 @@ use App\Helper\DateTimeHelpers;
 use App\Repository\TicketRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
 
@@ -131,6 +132,16 @@ class Ticket
     public function getComments(): Collection
     {
         return $this->comments;
+    }
+
+    /** @return Collection<int, Comment> */
+    public function getEnabledComments(): Collection
+    {
+        $criteria = Criteria::create()
+            ->where(Criteria::expr()->eq('enabled', true))
+            ->orderBy(['createdAt' => 'DESC']);
+
+        return $this->comments->matching($criteria);
     }
 
     public function addComment(Comment $comment): self
