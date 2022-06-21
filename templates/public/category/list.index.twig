@@ -21,4 +21,17 @@
             </li>
         {% endfor %}
     </ul>
+
+    {% if (previous >= 0) or (next < categories|length) %}
+        <nav aria-label="Pagination des catégories" class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if previous >= 0 %}
+                    <li class="page-item"><a class="page-link" href="{{ path('categories_list', { offset: previous }) }}">Précédentes</a></li>
+                {% endif %}
+                {% if next < categories|length %}
+                    <li class="page-item"><a class="page-link" href="{{ path('categories_list', { offset: next }) }}">Suivantes</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% endif %}
 {% endblock %}

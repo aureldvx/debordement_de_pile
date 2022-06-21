@@ -65,5 +65,18 @@
                 </a>
             {% endfor %}
         </div>
+
+        {% if (previous >= 0) or (next < tickets|length) %}
+            <nav aria-label="Pagination des tickets" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    {% if previous >= 0 %}
+                        <li class="page-item"><a class="page-link" href="{{ path('categories_show', { slug: category.slug, offset: previous }) }}">Précédents</a></li>
+                    {% endif %}
+                    {% if next < tickets|length %}
+                        <li class="page-item"><a class="page-link" href="{{ path('categories_show', { slug: category.slug, offset: next }) }}">Suivants</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
     {% endif %}
 {% endblock %}

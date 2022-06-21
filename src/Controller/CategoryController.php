@@ -28,10 +28,15 @@ class CategoryController extends AbstractController
     }
 
     #[Route(path: '/', name: 'list', methods: ['GET'])]
-    public function list(): Response
+    public function list(Request $request): Response
     {
+        $offset = max(0, $request->query->getInt('offset'));
+        $paginator = $this->categoryRepository->getCategoriesPaginator(offset: $offset);
+
         return $this->render('public/category/list.index.twig', [
-            'categories' => $this->categoryRepository->getAll(),
+            'categories' => $paginator,
+            'previous' => $offset - $this->categoryRepository::PAGINATOR_CATEGORIES_PER_PAGE,
+            'next' => min(count($paginator), $offset + $this->categoryRepository::PAGINATOR_CATEGORIES_PER_PAGE),
         ]);
     }
 
@@ -64,15 +69,20 @@ class CategoryController extends AbstractController
     }
 
     #[Route(path: '/{slug}', name: 'show', methods: ['GET'])]
-    public function show(Category $category): Response
+    public function show(Category $category, Request $request): Response
     {
         if (!$category->isEnabled()) {
             return $this->redirectToRoute('categories_list');
         }
 
+        $offset = max(0, $request->query->getInt('offset'));
+        $paginator = $this->ticketRepository->getTicketsPaginator(offset: $offset, category: $category);
+
         return $this->render('public/category/show.html.twig', [
             'category' => $category,
-            'tickets' => $this->ticketRepository->findByCategory($category),
+            'tickets' => $paginator,
+            'previous' => $offset - $this->ticketRepository::PAGINATOR_TICKETS_PER_PAGE,
+            'next' => min(count($paginator), $offset + $this->ticketRepository::PAGINATOR_TICKETS_PER_PAGE),
         ]);
     }
 
