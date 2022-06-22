@@ -5,32 +5,32 @@
     </a>
     <ul class="nav nav-pills nav-flush flex-column mb-auto text-center">
         <li class="nav-item">
-            <a href="{{ path('admin_dashboard') }}" class="nav-link active py-3 border-bottom rounded-0" aria-current="page" data-bs-toggle="tooltip" data-bs-placement="right" title="Dashboard">
+            <a href="{{ path('admin_dashboard') }}" class="nav-link py-3 border-bottom rounded-0 {{ is_active_page('admin_dashboard') ? 'active' : '' }}" {{ is_active_page('admin_dashboard') ? 'aria-current="page"' : '' }} data-bs-toggle="tooltip" data-bs-placement="right" title="Dashboard">
                 <svg class="bi pe-none" width="24" height="24" role="img" aria-label="Home"><use xlink:href="#house"></use></svg>
             </a>
         </li>
         <li>
-            <a href="{{ path('admin_login_activity_list') }}" class="nav-link py-3 border-bottom rounded-0" data-bs-toggle="tooltip" data-bs-placement="right" title="Activité de connexion">
+            <a href="{{ path('admin_login_activity_list') }}" class="nav-link py-3 border-bottom rounded-0 {{ is_active_page('admin_login_activity') ? 'active' : '' }}" {{ is_active_page('admin_login_activity') ? 'aria-current="page"' : '' }} data-bs-toggle="tooltip" data-bs-placement="right" title="Activité de connexion">
                 <svg class="bi pe-none" width="24" height="24" role="img" aria-label="Activité"><use xlink:href="#activity"></use></svg>
             </a>
         </li>
         <li>
-            <a href="{{ path('admin_reports_list') }}" class="nav-link py-3 border-bottom rounded-0" data-bs-toggle="tooltip" data-bs-placement="right" title="Signalements">
+            <a href="{{ path('admin_reports_list', { active: true }) }}" class="nav-link py-3 border-bottom rounded-0 {{ is_active_page('admin_reports') ? 'active' : '' }}" {{ is_active_page('admin_reports') ? 'aria-current="page"' : '' }} data-bs-toggle="tooltip" data-bs-placement="right" title="Signalements">
                 <svg class="bi pe-none" width="24" height="24" role="img" aria-label="Signalements"><use xlink:href="#exclamation-diamond"></use></svg>
             </a>
         </li>
         <li>
-            <a href="{{ path('admin_users_list') }}" class="nav-link py-3 border-bottom rounded-0" data-bs-toggle="tooltip" data-bs-placement="right" title="Utilisateurs">
+            <a href="{{ path('admin_users_list') }}" class="nav-link py-3 border-bottom rounded-0 {{ is_active_page('admin_users') ? 'active' : '' }}" {{ is_active_page('admin_users') ? 'aria-current="page"' : '' }} data-bs-toggle="tooltip" data-bs-placement="right" title="Utilisateurs">
                 <svg class="bi pe-none" width="24" height="24" role="img" aria-label="Utilisateurs"><use xlink:href="#person-circle"></use></svg>
             </a>
         </li>
         <li>
-            <a href="{{ path('admin_tickets_list') }}" class="nav-link py-3 border-bottom rounded-0" data-bs-toggle="tooltip" data-bs-placement="right" title="Tickets">
+            <a href="{{ path('admin_tickets_list') }}" class="nav-link py-3 border-bottom rounded-0 {{ is_active_page('admin_tickets') ? 'active' : '' }}" {{ is_active_page('admin_tickets') ? 'aria-current="page"' : '' }} data-bs-toggle="tooltip" data-bs-placement="right" title="Tickets">
                 <svg class="bi pe-none" width="24" height="24" role="img" aria-label="Tickets"><use xlink:href="#ticket-detailed"></use></svg>
             </a>
         </li>
         <li>
-            <a href="{{ path('admin_categories_list') }}" class="nav-link py-3 border-bottom rounded-0" data-bs-toggle="tooltip" data-bs-placement="right" title="Catégories">
+            <a href="{{ path('admin_categories_list') }}" class="nav-link py-3 border-bottom rounded-0 {{ is_active_page('admin_categories') ? 'active' : '' }}" {{ is_active_page('admin_categories') ? 'aria-current="page"' : '' }} data-bs-toggle="tooltip" data-bs-placement="right" title="Catégories">
                 <svg class="bi pe-none" width="24" height="24" role="img" aria-label="Catégories"><use xlink:href="#collection"></use></svg>
             </a>
         </li>

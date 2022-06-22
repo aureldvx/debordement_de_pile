@@ -99,7 +99,7 @@
                     {% endfor %}
                     </tbody>
                 </table>
-                <a href="{{ path('admin_reports_list') }}" class="btn btn-outline-secondary w-max-content">Voir tous les signalements</a>
+                <a href="{{ path('admin_reports_list', { active: true }) }}" class="btn btn-outline-secondary w-max-content">Voir tous les signalements</a>
             </div>
             {# Derniers tickets #}
             <div class="d-flex flex-column gap-2">

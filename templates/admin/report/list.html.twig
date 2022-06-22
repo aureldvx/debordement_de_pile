@@ -1,0 +1,65 @@
+{% extends 'admin/admin.html.twig' %}
+
+{% block title 'Signalements' %}
+
+{% block main %}
+    <h1 class="mb-5">Signalements</h1>
+
+    {% set active_tab = app.request.get('active') ? 'open' : 'closed' %}
+    <div class="btn-group mb-4" role="group" aria-label="Basic outlined example">
+        <a href="{{ path('admin_reports_list', { active: true }) }}" class="btn {{ active_tab == 'open' ? 'btn-primary' : 'btn-outline-primary' }}">Signalements non-traités</a>
+        <a href="{{ path('admin_reports_list', { active: false }) }}" class="btn {{ active_tab == 'closed' ? 'btn-primary' : 'btn-outline-primary' }}">Signalements traités</a>
+    </div>
+
+    <ul class="list-group w-100">
+        {% for report in reports %}
+            <li class="list-group-item d-flex py-3 flex-column justify-content-start align-items-start">
+                {% if report.resolvedAt is not null %}
+                    <button class="btn btn-outline-dark mb-3" disabled>Clôturé le <span data-intl-date="{{ report.resolvedAt | date }}"></span></button>
+                {% else %}
+                    <div class="d-flex align-items-center gap-2">
+                        <form class="mb-3" action="{{ path('admin_reports_resolve', { uuid: report.uuid }) }}" method="post">
+                            <input type="hidden" name="_method" value="PATCH">
+                            <button type="submit" class="btn btn-warning">Clore le signalement</button>
+                        </form>
+                        {% if report.ticket is not null %}
+                            <form class="mb-3" action="{{ path('admin_tickets_deactivate', { uuid: report.ticket.uuid }) }}" method="post">
+                                <input type="hidden" name="_method" value="PATCH">
+                                <button type="submit" class="btn {{ report.ticket.enabled ? 'btn-danger' : 'btn-light' }}" {{ report.ticket.enabled ?: 'disabled' }}>{{ report.ticket.enabled ? 'Supprimer ce ticket' : 'Ticket supprimé' }}</button>
+                            </form>
+                        {% else %}
+                            <form class="mb-3" action="{{ path('admin_comments_deactivate', { uuid: report.comment.uuid }) }}" method="post">
+                                <input type="hidden" name="_method" value="PATCH">
+                                <button type="submit" class="btn {{ report.comment.enabled ? 'btn-danger' : 'btn-light' }}" {{ report.comment.enabled ?: 'disabled' }}>{{ report.comment.enabled ? 'Supprimer ce commentaire' : 'Commentaire supprimé' }}</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                {% endif %}
+                {% if report.ticket is not null %}
+                    <a href="{{ path('tickets_show', { slug: report.ticket.slug }) }}" target="_blank" class="text-decoration-none">{{ report.ticket.title }}</a>
+                    <div class="mt-3">{{ report.description | html_decode | raw }}</div>
+                    <small class="text-muted mt-3">Ticket publié le <span data-intl-date="{{ report.ticket.createdAt | date }}"></span> par {{ report.ticket.author.pseudo }}</small>
+                    <small class="text-muted mt-1">Signalé le <span data-intl-date="{{ report.createdAt | date }}"></span> par {{ report.author.pseudo }}</small>
+                {% else %}
+                    <a href="{{ path('tickets_show', { slug: report.comment.ticket.slug, _fragment: report.comment.uuid }) }}" target="_blank" class="text-decoration-none">{{ report.comment.content }}</a>
+                    <div class="mt-3">{{ report.description | html_decode | raw }}</div>
+                    <small class="text-muted mt-3">Commentaire publié le <span data-intl-date="{{ report.comment.createdAt | date }}"></span> par {{ report.comment.author.pseudo }}</small>
+                    <small class="text-muted mt-1">Signalé le <span data-intl-date="{{ report.createdAt | date }}"></span> par {{ report.author.pseudo }}</small>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+
+    {% if (previous >= 0) or (next < reports|length) %}
+        <nav aria-label="Pagination des tickets" class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if previous >= 0 %}
+                    <li class="page-item"><a class="page-link" href="{{ path('admin_reports_list', { active: app.request.get('active', 1), offset: previous }) }}">Précédents</a></li>
+                {% endif %}
+                {% if next < reports|length %}
+                    <li class="page-item"><a class="page-link" href="{{ path('admin_reports_list', { active: app.request.get('active', 1), offset: next }) }}">Suivants</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% endif %}
+{% endblock %}

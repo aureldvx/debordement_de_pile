@@ -2,8 +2,10 @@
 
 namespace App\Repository;
 
+use App\Entity\LoginActivity;
 use App\Entity\Report;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -18,6 +20,8 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ReportRepository extends ServiceEntityRepository
 {
+    public const MAX_PER_PAGE = 25;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Report::class);
@@ -39,5 +43,26 @@ class ReportRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    /** @return Paginator<Report> */
+    public function getPaginator(int $offset, bool $enabled = true): Paginator
+    {
+        $query = $this
+            ->createQueryBuilder('r')
+            ->where($enabled ? 'r.resolvedAt IS NULL' : 'r.resolvedAt IS NOT NULL');
+
+        if ($enabled) {
+            $query->orderBy('r.createdAt', 'DESC');
+        } else {
+            $query->orderBy('r.resolvedAt', 'DESC');
+        }
+
+        $query
+            ->setMaxResults(self::MAX_PER_PAGE)
+            ->setFirstResult($offset)
+            ->getQuery();
+
+        return new Paginator($query);
     }
 }
