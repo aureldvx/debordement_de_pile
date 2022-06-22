@@ -1,0 +1,42 @@
+{% extends 'public/public.html.twig' %}
+
+{% block main %}
+    <div class="p-5 mb-4 bg-light rounded-3">
+        <div class="container-fluid py-5">
+            <h1 class="display-5 fw-bold">Bienvenue sur Débordement de Pile</h1>
+            <p class="col-md-8 fs-4">Un espace communautaire pour trouver et apporter des réponses aux défis techniques, dédiés aux développeurs francophones, peu importe votre niveau.</p>
+            <a href="{{ path('auth_signup') }}" class="btn btn-primary btn-lg">Créer un compte</a>
+        </div>
+    </div>
+
+    <h2>Derniers tickets publiés</h2>
+    <div class="list-group w-100">
+        {% for ticket in tickets %}
+            <a href="{{ path('tickets_show', { slug: ticket.slug }) }}" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
+                {% if ticket.closed %}
+                    <div class="rounded-circle flex-shrink-0 bg-black bg-opacity-10 d-flex align-items-center justify-content-center" style="block-size: 40px; inline-size: 40px;" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Ticket clos">
+                        <svg class="bi text-black" width="18" height="18" role="img" aria-label="Verrouillé"><use xlink:href="#key"></use></svg>
+                    </div>
+                {% endif %}
+                <div class="d-flex gap-4 w-100 justify-content-between">
+                    <div>
+                        <h6 class="mb-2 text-primary">{{ ticket.title }}</h6>
+                        <p class="mb-0 opacity-75">{{ ticket.content[0:300] | u.truncate(295, '...') }}</p>
+                        <small class="text-muted d-inline-block mt-2">Publié par {{ display_pseudo(ticket.author) }} le <span data-intl-date="{{ ticket.createdAt | date }}"></span></small>
+                    </div>
+                    <small class="opacity-50 text-nowrap" data-intl-date="{{ ticket.createdAt | date('Y-m-d H:i:s') }}"></small>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+
+    <h2 class="mt-5">Dernières catégories créées</h2>
+    <ul class="list-group mt-4">
+        {% for category in categories %}
+            <li class="list-group-item d-flex justify-content-between align-items-baseline flex-wrap">
+                <a href="{{ path('categories_show', { slug: category.slug }) }}" class="text-decoration-none">{{ category.title }}</a>
+                <small class="text-muted">{{ tickets_count(category) }} ticket(s)</small>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
