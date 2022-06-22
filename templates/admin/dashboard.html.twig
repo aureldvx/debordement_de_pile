@@ -1,0 +1,127 @@
+{% extends 'admin/admin.html.twig' %}
+
+{% block title 'Dashboard' %}
+
+{% block main %}
+    <h1 class="mb-5">Bienvenue sur votre dashboard {{ app.user.firstname }}</h1>
+
+    <div class="row row-cols-1 row-cols-xl-2">
+        <div class="col d-flex flex-column gap-5">
+            {# Dernières connexions #}
+            <div class="d-flex flex-column gap-2">
+                <h3 class="bg-info bg-opacity-10 p-2 text-info">Dernières connexions</h3>
+                <table class="table table-striped table-hover">
+                    <thead>
+                    <tr>
+                        <th>Pseudo</th>
+                        <th>Connecté le</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for activity in login_activities %}
+                        <tr>
+                            <td>{{ activity.relatedUser.pseudo }}</td>
+                            <td data-intl-date="{{ activity.connectedAt | date }}"></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <a href="{{ path('admin_login_activity_list') }}" class="btn btn-outline-secondary w-max-content">Voir toutes les connexions</a>
+            </div>
+            {# Dernières catégories #}
+            <div class="d-flex flex-column gap-2">
+                <h3 class="bg-info bg-opacity-10 p-2 text-info">Dernières catégories</h3>
+                <table class="table table-striped table-hover">
+                    <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Créée le</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for category in last_categories %}
+                        <tr>
+                            <td>{{ category.title[0:55] | u.truncate(50, '...') }}</td>
+                            <td><span data-intl-date="{{ category.createdAt | date }}"></span> par {{ category.createdBy.pseudo }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <a href="{{ path('admin_categories_list') }}" class="btn btn-outline-secondary w-max-content">Voir toutes les catégories</a>
+            </div>
+            {# Derniers utilisateurs #}
+            <div class="d-flex flex-column gap-2">
+                <h3 class="bg-info bg-opacity-10 p-2 text-info">Derniers utilisateurs</h3>
+                <table class="table table-striped table-hover">
+                    <thead>
+                    <tr>
+                        <th>Pseudo</th>
+                        <th>Inscrit le</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for user in last_users %}
+                        <tr>
+                            <td>{{ user.pseudo }}</td>
+                            <td data-intl-date="{{ user.createdAt | date }}"></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <a href="{{ path('admin_users_list') }}" class="btn btn-outline-secondary w-max-content">Voir tous les utilisateurs</a>
+            </div>
+        </div>
+        <div class="col d-flex flex-column gap-5">
+            {# Derniers signalements #}
+            <div class="d-flex flex-column gap-2">
+                <h3 class="bg-info bg-opacity-10 p-2 text-info">Derniers signalements</h3>
+                <table class="table table-striped table-hover">
+                    <thead>
+                    <tr>
+                        <th>Ticket ou Commentaire</th>
+                        <th>Signalé le</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for report in last_reports %}
+                        <tr>
+                            {% if report.ticket is not null %}
+                                <td>
+                                    <a class="text-decoration-none" href="{{ path('tickets_show', { slug: report.ticket.slug }) }}">{{ report.ticket.title[0:55] | u.truncate(50, '...') }}</a>
+                                </td>
+                            {% else %}
+                                <td>
+                                    <a class="text-decoration-none" href="{{ path('tickets_show', { slug: report.comment.ticket.slug, _fragment: report.comment.uuid }) }}">{{ report.comment.content[0:55] | u.truncate(50, '...') }}</a>
+                                </td>
+                            {% endif %}
+                            <td><span data-intl-date="{{ report.createdAt | date }}"></span> par {{ report.author.pseudo }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <a href="{{ path('admin_reports_list') }}" class="btn btn-outline-secondary w-max-content">Voir tous les signalements</a>
+            </div>
+            {# Derniers tickets #}
+            <div class="d-flex flex-column gap-2">
+                <h3 class="bg-info bg-opacity-10 p-2 text-info">Derniers tickets publiés</h3>
+                <table class="table table-striped table-hover">
+                    <thead>
+                    <tr>
+                        <th>Titre</th>
+                        <th>Publié le</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for ticket in last_tickets %}
+                        <tr>
+                            <td>{{ ticket.title[0:55] | u.truncate(50, '...') }}</td>
+                            <td><span data-intl-date="{{ ticket.createdAt | date }}"></span> par {{ ticket.author.pseudo }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <a href="{{ path('admin_tickets_list') }}" class="btn btn-outline-secondary w-max-content">Voir tous les tickets</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

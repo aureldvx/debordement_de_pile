@@ -10,33 +10,38 @@
             </a>
         </li>
         <li>
-            <a href="#" class="nav-link py-3 border-bottom rounded-0" data-bs-toggle="tooltip" data-bs-placement="right" title="Dashboard">
-                <svg class="bi pe-none" width="24" height="24" role="img" aria-label="Dashboard"><use xlink:href="#speedometer2"></use></svg>
+            <a href="{{ path('admin_login_activity_list') }}" class="nav-link py-3 border-bottom rounded-0" data-bs-toggle="tooltip" data-bs-placement="right" title="Activité de connexion">
+                <svg class="bi pe-none" width="24" height="24" role="img" aria-label="Activité"><use xlink:href="#activity"></use></svg>
             </a>
         </li>
         <li>
-            <a href="#" class="nav-link py-3 border-bottom rounded-0" data-bs-toggle="tooltip" data-bs-placement="right" title="Dashboard">
-                <svg class="bi pe-none" width="24" height="24" role="img" aria-label="Orders"><use xlink:href="#table"></use></svg>
+            <a href="{{ path('admin_reports_list') }}" class="nav-link py-3 border-bottom rounded-0" data-bs-toggle="tooltip" data-bs-placement="right" title="Signalements">
+                <svg class="bi pe-none" width="24" height="24" role="img" aria-label="Signalements"><use xlink:href="#exclamation-diamond"></use></svg>
             </a>
         </li>
         <li>
-            <a href="#" class="nav-link py-3 border-bottom rounded-0" data-bs-toggle="tooltip" data-bs-placement="right" title="Dashboard">
-                <svg class="bi pe-none" width="24" height="24" role="img" aria-label="Products"><use xlink:href="#grid"></use></svg>
+            <a href="{{ path('admin_users_list') }}" class="nav-link py-3 border-bottom rounded-0" data-bs-toggle="tooltip" data-bs-placement="right" title="Utilisateurs">
+                <svg class="bi pe-none" width="24" height="24" role="img" aria-label="Utilisateurs"><use xlink:href="#person-circle"></use></svg>
             </a>
         </li>
         <li>
-            <a href="#" class="nav-link py-3 border-bottom rounded-0" data-bs-toggle="tooltip" data-bs-placement="right" title="Dashboard">
-                <svg class="bi pe-none" width="24" height="24" role="img" aria-label="Customers"><use xlink:href="#people-circle"></use></svg>
+            <a href="{{ path('admin_tickets_list') }}" class="nav-link py-3 border-bottom rounded-0" data-bs-toggle="tooltip" data-bs-placement="right" title="Tickets">
+                <svg class="bi pe-none" width="24" height="24" role="img" aria-label="Tickets"><use xlink:href="#ticket-detailed"></use></svg>
+            </a>
+        </li>
+        <li>
+            <a href="{{ path('admin_categories_list') }}" class="nav-link py-3 border-bottom rounded-0" data-bs-toggle="tooltip" data-bs-placement="right" title="Catégories">
+                <svg class="bi pe-none" width="24" height="24" role="img" aria-label="Catégories"><use xlink:href="#collection"></use></svg>
             </a>
         </li>
     </ul>
     <div class="dropdown border-top">
-        <a href="#" class="d-flex align-items-center justify-content-center p-3 link-dark text-decoration-none dropdown-toggle" id="dropdownUser3" data-bs-toggle="dropdown" aria-expanded="false">
+        <button type="button" class="btn p-0 border-0 d-flex align-items-center justify-content-center p-3 link-dark text-decoration-none dropdown-toggle" id="dropdownUser3" data-bs-toggle="dropdown" aria-expanded="false">
             <img src="{{ asset('build/images/user-profile.png') }}" alt="mdo" width="28" height="28" class="rounded-circle">
-        </a>
+        </button>
         <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser3" style="">
-            <li><a class="dropdown-item" href="#">Profil</a></li>
-            <li><a class="dropdown-item" href="#">Déconnexion</a></li>
+            <li><a class="dropdown-item" href="{{ path('user_profile_by_slug', { slug: app.user.slug }) }}">Profil</a></li>
+            <li><a class="dropdown-item" href="{{ path('auth_logout') }}">Déconnexion</a></li>
         </ul>
     </div>
 </div>
