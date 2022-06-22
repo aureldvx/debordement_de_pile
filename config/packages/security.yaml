@@ -16,10 +16,8 @@ security:
             remember_me:
                 secret: '%kernel.secret%'
                 lifetime: 604800
-            form_login:
-                login_path: auth_login
-                check_path: auth_login
-                enable_csrf: true
+            custom_authenticators:
+                - App\Security\LoginAuthenticator
             logout:
                 path: auth_logout
                 target: public_home
