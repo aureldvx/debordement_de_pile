@@ -12,10 +12,11 @@ class TicketVoter extends Voter
 {
     public const EDIT = 'EDIT_TICKET';
     public const DELETE = 'DELETE_TICKET';
+    public const CLOSE = 'CLOSE_TICKET';
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        return in_array($attribute, [self::EDIT, self::DELETE])
+        return in_array($attribute, [self::EDIT, self::DELETE, self::CLOSE])
             && $subject instanceof Ticket;
     }
 

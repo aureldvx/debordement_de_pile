@@ -1,6 +1,9 @@
 @charset "UTF-8";
 @import 'bootstrap';
 
+* {
+    scroll-margin-block-start: 4rem;
+}
 
 label.required::after {
     content: '*';
@@ -10,4 +13,101 @@ label.required::after {
 
 .w-max-content {
     width: min-content !important;
+}
+
+.max-w-characters {
+    max-width: 90ch;
+}
+
+.reaction {
+    padding: 0;
+    border: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.reaction > .reaction_icon {
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(var(--bs-secondary-rgb), .1);
+    color: rgba(var(--bs-secondary-rgb), .5);
+    border: 2px solid rgba(var(--bs-secondary-rgb), .1);
+}
+
+.reaction > .reaction_label {
+    color: rgba(var(--bs-secondary-rgb), .5);
+}
+
+div.reaction.btn {
+    cursor: default;
+}
+
+.reaction[data-reaction-active][data-reaction-type="down"] {
+    > .reaction_icon {
+        background-color: rgba(var(--bs-danger-rgb), .1);
+        color: rgba(var(--bs-danger-rgb), 1);
+        border: 2px solid rgba(var(--bs-danger-rgb), 1);
+    }
+
+    > .reaction_label {
+        color: rgba(var(--bs-danger-rgb), 1);
+    }
+}
+
+.reaction[data-reaction-active][data-reaction-type="up"] {
+    > .reaction_icon {
+        background-color: rgba(var(--bs-success-rgb), .1);
+        color: rgba(var(--bs-success-rgb), 1);
+        border: 2px solid rgba(var(--bs-success-rgb), 1);
+    }
+
+    > .reaction_label {
+        color: rgba(var(--bs-success-rgb), 1);
+    }
+}
+
+.reaction[data-reaction-active][data-reaction-type="report"] {
+    > .reaction_icon {
+        background-color: rgba(var(--bs-warning-rgb), .1);
+        color: rgba(var(--bs-warning-rgb), 1);
+        border: 2px solid rgba(var(--bs-warning-rgb), 1);
+    }
+
+    > .reaction_label {
+        color: rgba(var(--bs-warning-rgb), 1);
+    }
+}
+
+.reaction[data-reaction-type="comment"] {
+    > .reaction_icon {
+        background-color: rgba(var(--bs-info-rgb), .1);
+        color: rgba(var(--bs-info-rgb), 1);
+        border: 2px solid rgba(var(--bs-info-rgb), .25);
+    }
+
+    > .reaction_label {
+        color: rgba(var(--bs-info-rgb), 1);
+    }
+}
+
+.reaction[data-reaction-type="closed"] {
+    > .reaction_icon {
+        background-color: rgba(var(--bs-secondary-rgb), .1);
+        color: rgba(var(--bs-secondary-rgb), 1);
+        border: 2px solid rgba(var(--bs-secondary-rgb), .25);
+    }
+
+    > .reaction_label {
+        color: rgba(var(--bs-secondary-rgb), 1);
+    }
+}
+
+@media (min-width:992px) {
+    .reaction {
+        flex-direction: row;
+    }
 }

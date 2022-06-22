@@ -75,12 +75,12 @@ class Ticket
         $this->updatedAt = DateTimeHelpers::createClassic();
     }
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function getContent(): ?string
+    public function getContent(): string
     {
         return $this->content;
     }

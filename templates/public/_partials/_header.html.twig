@@ -1,19 +1,14 @@
 <nav class="py-2 bg-light border-bottom">
     <div class="container d-flex flex-wrap justify-content-center justify-content-md-between">
-        <ul class="nav me-md-auto justify-content-center justify-content-md-start">
-            <li class="nav-item"><a href="{{ path('categories_list') }}" class="nav-link link-dark px-2 active">Catégories</a></li>
-            <li class="nav-item"><a href="#" class="nav-link link-dark px-2">Populaires</a></li>
-            <li class="nav-item"><a href="{{ path('tickets_list') }}" class="nav-link link-dark px-2">Tickets</a></li>
-        </ul>
-        <ul class="nav gap-2">
+        <ul class="nav gap-2 w-100">
             {% if is_granted('ROLE_ADMIN') %}
                 <li class="nav-item"><a href="{{ path('admin_dashboard') }}" class="btn btn-secondary h-100">Administration</a></li>
             {% endif %}
             {% if not app.user %}
-                <li class="nav-item"><a href="{{ path('auth_login') }}" class="btn btn-outline-primary">Connexion</a></li>
+                <li class="nav-item ms-auto"><a href="{{ path('auth_login') }}" class="btn btn-outline-primary">Connexion</a></li>
                 <li class="nav-item"><a href="{{ path('auth_signup') }}" class="btn btn-primary">Inscription</a></li>
             {% else %}
-                <li class="nav-item">
+                <li class="nav-item ms-auto">
                     <a href="{{ path('user_profile_by_slug', { slug: app.user.slug }) }}" class="btn btn-primary d-inline-flex gap-2 align-items-center h-100">
                         <svg class="bi" width="20" height="20" role="img" aria-label="Profil"><use xlink:href="#person"></use></svg>
                         Mon profil
@@ -34,8 +29,9 @@
             <img src="{{ asset('build/images/favicon.png') }}" alt="" width="40" height="40">
             <span class="fs-4">Débordement de Pile</span>
         </a>
-        <form class="col-12 col-lg-auto mb-3 mb-lg-0" role="search">
-            <input type="search" class="form-control" placeholder="Rechercher..." aria-label="Rechercher">
-        </form>
+        <ul class="col-12 col-lg-auto mb-3 mb-lg-0 nav justify-content-center justify-content-lg-end">
+            <li class="nav-item"><a href="{{ path('categories_list') }}" class="nav-link link-dark px-2 active">Catégories</a></li>
+            <li class="nav-item"><a href="{{ path('tickets_list') }}" class="nav-link link-dark px-2">Tickets</a></li>
+        </ul>
     </div>
 </header>
