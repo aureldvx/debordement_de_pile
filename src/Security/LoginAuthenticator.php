@@ -2,6 +2,11 @@
 
 namespace App\Security;
 
+use App\Entity\LoginActivity;
+use App\Entity\User;
+use App\Helper\DateTimeHelpers;
+use App\Helper\UserHelpers;
+use App\Repository\LoginActivityRepository;
 use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,6 +29,7 @@ class LoginAuthenticator extends AbstractLoginFormAuthenticator implements Authe
     public function __construct(
         private readonly UrlGeneratorInterface $urlGenerator,
         private readonly UserRepository $userRepository,
+        private readonly LoginActivityRepository $loginActivityRepository,
     ) {
     }
 
@@ -50,6 +56,18 @@ class LoginAuthenticator extends AbstractLoginFormAuthenticator implements Authe
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
+        /** @var User|null $user */
+        $user = $token->getUser();
+
+        if ($user) {
+            $loginActivity = new LoginActivity();
+            $loginActivity
+                ->setRelatedUser($user)
+                ->setIpAddress(UserHelpers::getIp())
+                ->setConnectedAt(DateTimeHelpers::createImmutable());
+            $this->loginActivityRepository->add($loginActivity, true);
+        }
+
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);
         }
