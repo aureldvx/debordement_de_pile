@@ -17,7 +17,7 @@
         {% for ticket in tickets %}
             <li class="list-group-item d-flex justify-content-between align-items-baseline flex-wrap">
                 <a href="{{ path('tickets_show', { slug: ticket.slug }) }}" class="text-decoration-none">{{ ticket.title }}</a>
-                <small class="text-muted">{{ ticket.enabledComments | length }} commentaire(s)</small>
+                <small class="text-muted">{{ comments_count(ticket) }} commentaire(s)</small>
             </li>
         {% endfor %}
 

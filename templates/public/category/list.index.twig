@@ -17,7 +17,7 @@
         {% for category in categories %}
             <li class="list-group-item d-flex justify-content-between align-items-baseline flex-wrap">
                 <a href="{{ path('categories_show', { slug: category.slug }) }}" class="text-decoration-none">{{ category.title }}</a>
-                <small class="text-muted">{{ category.tickets | length }} ticket(s)</small>
+                <small class="text-muted">{{ tickets_count(category) }} ticket(s)</small>
             </li>
         {% endfor %}
     </ul>

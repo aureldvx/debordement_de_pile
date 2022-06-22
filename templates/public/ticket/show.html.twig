@@ -25,7 +25,7 @@
             {% endif %}
             <h1 class="mb-4" id="{{ ticket.uuid }}">{{ ticket.title }}</h1>
             <div class="max-w-characters mb-4">{{ ticket.content }}</div>
-            <small class="text-muted">Publié par {{ ticket.pseudo }} le <span data-intl-date="{{ ticket.createdAt | date }}"></span></small>
+            <small class="text-muted">Publié par {{ display_pseudo(ticket_entity.author) }} le <span data-intl-date="{{ ticket.createdAt | date }}"></span></small>
             {% if is_granted('EDIT_TICKET', ticket) %}
                 <a href="{{ path('tickets_edit', { slug: ticket.slug }) }}" class="btn btn-primary d-inline-flex gap-2 align-items-center align-self-start mt-3">
                     <svg class="bi" width="18" height="18" role="img" aria-label="Modifier"><use xlink:href="#pen"></use></svg>

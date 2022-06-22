@@ -134,16 +134,6 @@ class Ticket
         return $this->comments;
     }
 
-    /** @return Collection<int, Comment> */
-    public function getEnabledComments(): Collection
-    {
-        $criteria = Criteria::create()
-            ->where(Criteria::expr()->eq('enabled', true))
-            ->orderBy(['createdAt' => 'DESC']);
-
-        return $this->comments->matching($criteria);
-    }
-
     public function addComment(Comment $comment): self
     {
         if (!$this->comments->contains($comment)) {

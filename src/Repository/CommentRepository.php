@@ -52,7 +52,9 @@ class CommentRepository extends ServiceEntityRepository
     {
         return $this
             ->createQueryBuilder('c')
+            ->join('c.author', 'a')
             ->where('c.enabled = true')
+            ->andWhere('a.blockedAt IS NULL')
             ->orderBy('c.createdAt', 'DESC')
             ->getQuery()
             ->getResult();
@@ -65,7 +67,9 @@ class CommentRepository extends ServiceEntityRepository
     {
         return $this
             ->createQueryBuilder('c')
+            ->join('c.author', 'a')
             ->where('c.enabled = true')
+            ->andWhere('a.blockedAt IS NULL')
             ->andWhere('c.ticket = :ticket')
             ->orderBy('c.createdAt', 'DESC')
             ->setParameter('ticket', $ticket)
@@ -78,7 +82,9 @@ class CommentRepository extends ServiceEntityRepository
     {
         $builder = $this
             ->createQueryBuilder('c')
+            ->join('c.author', 'a')
             ->where('c.enabled = true')
+            ->andWhere('a.blockedAt IS NULL')
             ->andWhere('c.parent IS NULL')
             ->orderBy('c.createdAt', 'DESC')
             ->setMaxResults(self::PAGINATOR_COMMENTS_PER_PAGE)

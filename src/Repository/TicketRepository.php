@@ -52,7 +52,9 @@ class TicketRepository extends ServiceEntityRepository
     {
         $builder = $this
             ->createQueryBuilder('t')
+            ->join('t.author', 'a')
             ->where('t.enabled = true')
+            ->andWhere('a.blockedAt IS NULL')
             ->orderBy('t.createdAt', 'DESC');
 
         if (!$withClosed) {
@@ -71,8 +73,10 @@ class TicketRepository extends ServiceEntityRepository
     {
         return $this
             ->createQueryBuilder('t')
+            ->join('t.author', 'a')
             ->where('t.enabled = true')
             ->andWhere('t.category = :category')
+            ->andWhere('a.blockedAt IS NULL')
             ->orderBy('t.createdAt', 'DESC')
             ->setParameter('category', $category)
             ->getQuery()
@@ -84,7 +88,9 @@ class TicketRepository extends ServiceEntityRepository
     {
         $builder = $this
             ->createQueryBuilder('t')
+            ->join('t.author', 'a')
             ->where('t.enabled = true')
+            ->andWhere('a.blockedAt IS NULL')
             ->orderBy('t.createdAt', 'DESC')
             ->setMaxResults(self::PAGINATOR_TICKETS_PER_PAGE)
             ->setFirstResult($offset);

@@ -8,10 +8,12 @@ use App\Entity\User;
 use App\Enum\VoteType;
 use App\Form\Ticket\CreateTicketType;
 use App\Form\Ticket\EditTicketType;
+use App\Helper\UserHelpers;
 use App\Repository\CommentRepository;
 use App\Repository\ReportRepository;
 use App\Repository\TicketRepository;
 use App\Repository\VoteRepository;
+use App\Twig\AppRuntime;
 use App\ValueObject\CommentViewModel;
 use App\ValueObject\TicketViewModel;
 use Exception;
@@ -193,7 +195,7 @@ class TicketController extends AbstractController
 
         $commentVM = new CommentViewModel();
         $commentVM->uuid = $comment->getUuid();
-        $commentVM->pseudo = $comment->getAuthor()->getPseudo();
+        $commentVM->pseudo = UserHelpers::displayPseudo($comment->getAuthor());
         $commentVM->content = $comment->getContent();
         $commentVM->createdAt = $comment->getCreatedAt();
         $commentVM->children = array_map([$this, 'normalizeComment'], $comment->getChildren()->toArray());
