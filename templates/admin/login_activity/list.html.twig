@@ -1,0 +1,39 @@
+{% extends 'admin/admin.html.twig' %}
+
+{% block title 'Dashboard' %}
+
+{% block main %}
+    <h1 class="mb-5">Activité de connexion</h1>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Pseudo</th>
+            <th scope="col">Adresse IP</th>
+            <th scope="col">Connecté le</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for activity in activities %}
+            <tr>
+                <td scope="row">{{ activity.relatedUser.pseudo }}</td>
+                <td>{{ activity.ipAddress }}</td>
+                <td data-intl-date="{{ activity.connectedAt | date }}"></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    {% if (previous >= 0) or (next < activities|length) %}
+        <nav aria-label="Pagination des tickets" class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if previous >= 0 %}
+                    <li class="page-item"><a class="page-link" href="{{ path('admin_login_activity_list', { offset: previous }) }}">Précédents</a></li>
+                {% endif %}
+                {% if next < activities|length %}
+                    <li class="page-item"><a class="page-link" href="{{ path('admin_login_activity_list', { offset: next }) }}">Suivants</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% endif %}
+{% endblock %}
