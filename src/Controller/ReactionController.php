@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Controller\Trait\RequestContentValidatorTrait;
 use App\Entity\Comment;
 use App\Entity\Report;
 use App\Entity\Ticket;

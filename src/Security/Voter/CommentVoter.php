@@ -3,7 +3,6 @@
 namespace App\Security\Voter;
 
 use App\Entity\Comment;
-use App\Entity\Ticket;
 use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;

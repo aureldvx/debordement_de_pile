@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Trait;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
