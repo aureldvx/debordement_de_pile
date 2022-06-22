@@ -1,0 +1,57 @@
+{% if comments | length > 0 %}
+    <div class="mt-3 d-flex flex-column gap-3 {% if root_element is not defined or root_element == false%}ps-5{% endif %}">
+        {% for comment in comments %}
+            <div class="d-flex flex-column align-items-stretch">
+                <article id="{{ comment.uuid }}" class="list-group-item p-3 border border-2 border-opacity-10 border-dark rounded-2">
+                    <div class="d-flex gap-3">
+                        <img src="{{ asset('build/images/user-profile.png') }}" alt="photo de profil" width="32" height="32" class="rounded-circle flex-shrink-0">
+                        <div class="d-flex gap-2 w-100 justify-content-between">
+                            <div>
+                                <h6 class="my-2">{{ comment.pseudo }}</h6>
+                                <div class="mb-0 opacity-75">{{ comment.content }}</div>
+                            </div>
+                            <small class="opacity-50 text-nowrap" data-intl-date="{{ comment.createdAt | date }}"></small>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-4 mt-3" style="padding-inline-start: 48px;">
+                        {{ include('public/ticket/_partials/reactions.html.twig', {
+                            reaction: 'up',
+                            active: comment.userHasUpvote,
+                            uuid: comment.uuid,
+                            subject: 'comment',
+                            count: comment.upVotesCount
+                        }) }}
+                        {{ include('public/ticket/_partials/reactions.html.twig', {
+                            reaction: 'down',
+                            active: comment.userHasDownvote,
+                            uuid: comment.uuid,
+                            subject: 'comment',
+                            count: comment.downVotesCount
+                        }) }}
+                        {% if is_granted('ROLE_USER') %}
+                            {{ include('public/ticket/_partials/reactions.html.twig', {
+                                reaction: 'comment',
+                                ticket_uuid: ticket.uuid,
+                                parent_uuid: comment.uuid,
+                                subject: 'comment'
+                            }) }}
+                        {% endif %}
+                        {{ include('public/ticket/_partials/reactions.html.twig', {
+                            reaction: 'report',
+                            active: comment.userHasReported,
+                            uuid: comment.uuid,
+                            subject: 'comment',
+                            align_end: true
+                        }) }}
+                    </div>
+                </article>
+                {{ include('public/ticket/_partials/comment-group.html.twig', { comments: comment.children, ticket: ticket, root_element: false }) }}
+            </div>
+        {% endfor %}
+    </div>
+{% elseif root_element is defined and root_element == true %}
+    <div class="alert alert-secondary" role="alert">
+        Aucun commentaire pour le moment.
+    </div>
+{% endif %}
+

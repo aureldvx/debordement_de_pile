@@ -1,0 +1,114 @@
+{% if reaction == 'report' %}
+    <button
+        type="button"
+        class="btn reaction {% if align_end is defined and align_end == true %}ms-auto{% endif %}"
+        data-reaction-type="{{ reaction }}"
+        {% if active == true %}
+            data-reaction-active=""
+        {% endif %}
+        data-bs-toggle="modal"
+        data-bs-target="#modal-report-{{ uuid }}"
+    >
+        <span
+            style="width: 48px; height: 48px;"
+            class="reaction_icon"
+        >
+            <svg class="bi" width="18" height="18" role="img" aria-label="Upvote"><use xlink:href="#exclamation-diamond-fill"></use></svg>
+        </span>
+        {% if reaction == 'report' and active == true %}
+            <span class="reaction_label">Signalé</span>
+        {% elseif reaction == 'report' and active == false %}
+            <span class="reaction_label">Signaler</span>
+        {% endif %}
+    </button>
+    <div class="modal fade" id="modal-report-{{ uuid }}" tabindex="-1" aria-labelledby="{{ uuid }}-report-modal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-report-title-{{ uuid }}">Signaler un contenu</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ path('reactions_report', { uuid: uuid }) }}" method="post" id="{{ uuid }}-report-form" class="w-100">
+                        <div>
+                            <label for="{{ uuid }}_description" class="form-label">Précisions supplémentaires</label>
+                            <textarea class="form-control" name="description" id="{{ uuid }}_description" cols="30" rows="10" placeholder="Veuillez préciser la raison de votre signalement pour faciliter le travail des modérateurs du site."></textarea>
+                        </div>
+                        <input type="hidden" name="subject" value="{{ subject }}">
+                        <input type="hidden" name="type" value="report">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler le signalement</button>
+                    <button type="submit" class="btn btn-warning" form="{{ uuid }}-report-form">Signaler ce contenu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% elseif reaction == 'comment' %}
+    <button
+        type="button"
+        class="btn reaction {% if align_end is defined and align_end == true %}ms-auto{% endif %}"
+        data-reaction-type="{{ reaction }}"
+        data-bs-toggle="modal"
+        data-bs-target="#modal-comment-{{ parent_uuid ?: ticket_uuid }}"
+    >
+        <span
+            style="width: 48px; height: 48px;"
+            class="reaction_icon"
+        >
+            <svg class="bi" width="18" height="18" role="img" aria-label="Ajouter un commentaire"><use xlink:href="#chat-dots-fill"></use></svg>
+        </span>
+        <span class="reaction_label">Commenter</span>
+    </button>
+    <div class="modal fade" id="modal-comment-{{ parent_uuid ?: ticket_uuid }}" tabindex="-1" aria-labelledby="{{ parent_uuid ?: ticket_uuid }}-comment-modal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-comment-title-{{ parent_uuid ?: ticket_uuid }}">Ajouter un commentaire</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ path('comments_create') }}" method="post" id="{{ parent_uuid ?: ticket_uuid }}-comment-form" class="w-100">
+                        <div>
+                            <label for="{{ parent_uuid ?: ticket_uuid }}_content" class="form-label">Contenu du commentaire</label>
+                            <textarea class="form-control" name="content" id="{{ parent_uuid ?: ticket_uuid }}_content" cols="30" rows="10"></textarea>
+                        </div>
+                        <input type="hidden" name="subject" value="{{ subject }}">
+                        <input type="hidden" name="ticket_uuid" value="{{ ticket_uuid }}">
+                        <input type="hidden" name="parent_uuid" value="{{ parent_uuid }}">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler et fermer</button>
+                    <button type="submit" class="btn btn-success" form="{{ parent_uuid ?: ticket_uuid }}-comment-form">Publier mon commentaire</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% else %}
+    <form action="{{ path('reactions_vote', { uuid: uuid }) }}" method="post" id="{{ uuid }}-vote-form">
+        <input type="hidden" name="subject" value="{{ subject }}">
+        <input type="hidden" name="type" value="{{ reaction }}">
+        <button
+            type="submit"
+            class="btn reaction {% if align_end is defined and align_end == true %}ms-auto{% endif %}"
+            data-reaction-type="{{ reaction }}"
+            {% if active == true %}
+                data-reaction-active=""
+            {% endif %}
+        >
+        <span
+            style="width: 48px; height: 48px;"
+            class="reaction_icon"
+        >
+            {% if reaction == 'up' %}
+                <svg class="bi" width="18" height="18" role="img" aria-label="Upvote"><use xlink:href="#hand-thumbs-up-fill"></use></svg>
+            {% elseif reaction == 'down' %}
+                <svg class="bi" width="18" height="18" role="img" aria-label="Upvote"><use xlink:href="#hand-thumbs-down-fill"></use></svg>
+            {% endif %}
+        </span>
+            <span class="reaction_label">{{ count }}</span>
+        </button>
+    </form>
+{% endif %}

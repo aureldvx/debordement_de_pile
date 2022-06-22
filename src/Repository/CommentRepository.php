@@ -3,7 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Comment;
+use App\Entity\Ticket;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -18,6 +20,8 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class CommentRepository extends ServiceEntityRepository
 {
+    public const PAGINATOR_COMMENTS_PER_PAGE = 20;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Comment::class);
@@ -39,5 +43,54 @@ class CommentRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    /**
+     * @return Comment[]
+     */
+    public function getAll(): array
+    {
+        return $this
+            ->createQueryBuilder('c')
+            ->where('c.enabled = true')
+            ->orderBy('c.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return Comment[]
+     */
+    public function findByTicket(Ticket $ticket): array
+    {
+        return $this
+            ->createQueryBuilder('c')
+            ->where('c.enabled = true')
+            ->andWhere('c.ticket = :ticket')
+            ->orderBy('c.createdAt', 'DESC')
+            ->setParameter('ticket', $ticket)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /** @return Paginator<Comment> */
+    public function getCommentsPaginator(int $offset, ?Ticket $ticket = null): Paginator
+    {
+        $builder = $this
+            ->createQueryBuilder('c')
+            ->where('c.enabled = true')
+            ->andWhere('c.parent IS NULL')
+            ->orderBy('c.createdAt', 'DESC')
+            ->setMaxResults(self::PAGINATOR_COMMENTS_PER_PAGE)
+            ->setFirstResult($offset);
+
+        if ($ticket) {
+            $builder->andWhere('c.ticket = :ticket');
+            $builder->setParameter('ticket', $ticket);
+        }
+
+        $query = $builder->getQuery();
+
+        return new Paginator($query);
     }
 }
