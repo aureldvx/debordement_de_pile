@@ -5,9 +5,10 @@
         data-reaction-type="{{ reaction }}"
         {% if active == true %}
             data-reaction-active=""
+        {% else %}
+            data-bs-toggle="modal"
+            data-bs-target="#modal-report-{{ uuid }}"
         {% endif %}
-        data-bs-toggle="modal"
-        data-bs-target="#modal-report-{{ uuid }}"
     >
         <span
             style="width: 48px; height: 48px;"
@@ -21,30 +22,32 @@
             <span class="reaction_label">Signaler</span>
         {% endif %}
     </button>
-    <div class="modal fade" id="modal-report-{{ uuid }}" tabindex="-1" aria-labelledby="{{ uuid }}-report-modal" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modal-report-title-{{ uuid }}">Signaler un contenu</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form action="{{ path('reactions_report', { uuid: uuid }) }}" method="post" id="{{ uuid }}-report-form" class="w-100">
-                        <div>
-                            <label for="{{ uuid }}_description" class="form-label">Précisions supplémentaires</label>
-                            <textarea class="form-control" name="description" id="{{ uuid }}_description" cols="30" rows="10" placeholder="Veuillez préciser la raison de votre signalement pour faciliter le travail des modérateurs du site."></textarea>
-                        </div>
-                        <input type="hidden" name="subject" value="{{ subject }}">
-                        <input type="hidden" name="type" value="report">
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler le signalement</button>
-                    <button type="submit" class="btn btn-warning" form="{{ uuid }}-report-form">Signaler ce contenu</button>
+    {% if active == false %}
+        <div class="modal fade" id="modal-report-{{ uuid }}" tabindex="-1" aria-labelledby="{{ uuid }}-report-modal" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modal-report-title-{{ uuid }}">Signaler un contenu</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="{{ path('reactions_report', { uuid: uuid }) }}" method="post" id="{{ uuid }}-report-form" class="w-100">
+                            <div>
+                                <label for="{{ uuid }}_description" class="form-label">Précisions supplémentaires</label>
+                                <textarea class="form-control" name="description" id="{{ uuid }}_description" cols="30" rows="10" placeholder="Veuillez préciser la raison de votre signalement pour faciliter le travail des modérateurs du site."></textarea>
+                            </div>
+                            <input type="hidden" name="subject" value="{{ subject }}">
+                            <input type="hidden" name="type" value="report">
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler le signalement</button>
+                        <button type="submit" class="btn btn-warning" form="{{ uuid }}-report-form">Signaler ce contenu</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    {% endif %}
 {% elseif reaction == 'comment' %}
     <button
         type="button"

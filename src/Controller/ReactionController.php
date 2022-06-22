@@ -104,14 +104,23 @@ class ReactionController extends AbstractController
         if ('ticket' === strval($request->get('subject'))) {
             /** @var Ticket|null $relatedEntity */
             $relatedEntity = $this->ticketRepository->findOneBy(['uuid' => $uuid]);
+            $alreadyReported = null !== $this->reportRepository->findOneBy([
+                'author' => $user,
+                'ticket' => $relatedEntity,
+            ]);
         } else {
             /** @var Comment|null $relatedEntity */
             $relatedEntity = $this->commentRepository->findOneBy(['uuid' => $uuid]);
+            $alreadyReported = null !== $this->reportRepository->findOneBy([
+                'author' => $user,
+                'comment' => $relatedEntity,
+            ]);
         }
 
-        if (!$relatedEntity) {
+        if (!$relatedEntity || $alreadyReported) {
             return $this->redirect($request->headers->get('referer')."#{$uuid}");
         }
+
 
         $report = new Report();
 
