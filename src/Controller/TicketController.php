@@ -13,7 +13,6 @@ use App\Repository\CommentRepository;
 use App\Repository\ReportRepository;
 use App\Repository\TicketRepository;
 use App\Repository\VoteRepository;
-use App\Twig\AppRuntime;
 use App\ValueObject\CommentViewModel;
 use App\ValueObject\TicketViewModel;
 use Exception;
