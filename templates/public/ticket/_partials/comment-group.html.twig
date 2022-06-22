@@ -28,7 +28,7 @@
                             subject: 'comment',
                             count: comment.downVotesCount
                         }) }}
-                        {% if is_granted('ROLE_USER') %}
+                        {% if is_granted('COMMENT_TICKET', ticket_entity) %}
                             {{ include('public/ticket/_partials/reactions.html.twig', {
                                 reaction: 'comment',
                                 ticket_uuid: ticket.uuid,
@@ -45,7 +45,7 @@
                         }) }}
                     </div>
                 </article>
-                {{ include('public/ticket/_partials/comment-group.html.twig', { comments: comment.children, ticket: ticket, root_element: false }) }}
+                {{ include('public/ticket/_partials/comment-group.html.twig', { comments: comment.children, ticket: ticket, ticket_entity: ticket_entity, root_element: false }) }}
             </div>
         {% endfor %}
     </div>

@@ -12,10 +12,13 @@ class CommentVoter extends Voter
 {
     public const EDIT = 'EDIT_COMMENT';
     public const DELETE = 'DELETE_COMMENT';
+    public const COMMENT = 'COMMENT_COMMENT';
+    public const REACT = 'REACT_TICKET';
+    public const REPORT = 'REPORT_TICKET';
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        return in_array($attribute, [self::EDIT, self::DELETE])
+        return in_array($attribute, [self::EDIT, self::DELETE, self::COMMENT, self::REACT, self::REPORT])
             && $subject instanceof Comment;
     }
 
@@ -32,9 +35,18 @@ class CommentVoter extends Voter
         }
 
         if (in_array('ROLE_ADMIN', $authUser->getRoles())) {
+            if (in_array($attribute, [self::COMMENT, self::REACT])) {
+                return !$comment->getTicket()->isClosed() && $comment->getTicket()->isEnabled();
+            }
+
             return true;
         }
 
-        return $comment->getAuthor() === $authUser;
+        return match ($attribute) {
+            self::EDIT => $comment->getAuthor() === $authUser && !$comment->getTicket()->isClosed() && $comment->getTicket()->isEnabled(),
+            self::COMMENT, self::REACT => !$comment->getTicket()->isClosed() && $comment->getTicket()->isEnabled(),
+            self::REPORT => $comment->getTicket()->isEnabled(),
+            default => $comment->getAuthor() === $authUser,
+        };
     }
 }

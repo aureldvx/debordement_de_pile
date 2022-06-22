@@ -13,10 +13,13 @@ class TicketVoter extends Voter
     public const EDIT = 'EDIT_TICKET';
     public const DELETE = 'DELETE_TICKET';
     public const CLOSE = 'CLOSE_TICKET';
+    public const COMMENT = 'COMMENT_TICKET';
+    public const REACT = 'REACT_TICKET';
+    public const REPORT = 'REPORT_TICKET';
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        return in_array($attribute, [self::EDIT, self::DELETE, self::CLOSE])
+        return in_array($attribute, [self::EDIT, self::DELETE, self::CLOSE, self::COMMENT, self::REACT, self::REPORT])
             && $subject instanceof Ticket;
     }
 
@@ -33,9 +36,18 @@ class TicketVoter extends Voter
         }
 
         if (in_array('ROLE_ADMIN', $authUser->getRoles())) {
+            if (in_array($attribute, [self::COMMENT, self::REACT])) {
+                return !$ticket->isClosed() && $ticket->isEnabled();
+            }
+
             return true;
         }
 
-        return $ticket->getAuthor() === $authUser;
+        return match ($attribute) {
+            self::EDIT => $ticket->getAuthor() === $authUser && !$ticket->isClosed() && $ticket->isEnabled(),
+            self::COMMENT, self::REACT => !$ticket->isClosed() && $ticket->isEnabled(),
+            self::REPORT => $ticket->isEnabled(),
+            default => $ticket->getAuthor() === $authUser,
+        };
     }
 }

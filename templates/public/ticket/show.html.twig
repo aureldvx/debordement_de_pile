@@ -49,7 +49,7 @@
                     subject: 'ticket',
                     count: ticket.downVotesCount
                 }) }}
-                {% if is_granted('ROLE_USER') %}
+                {% if is_granted('COMMENT_TICKET', ticket_entity) %}
                     {{ include('public/ticket/_partials/reactions.html.twig', {
                         reaction: 'comment',
                         ticket_uuid: ticket.uuid,
@@ -58,12 +58,14 @@
                     }) }}
                 {% endif %}
             </div>
-            {{ include('public/ticket/_partials/reactions.html.twig', {
-                reaction: 'report',
-                active: ticket.userHasReported,
-                uuid: ticket.uuid,
-                subject: 'ticket'
-            }) }}
+            {% if is_granted('REPORT_TICKET', ticket_entity) %}
+                {{ include('public/ticket/_partials/reactions.html.twig', {
+                    reaction: 'report',
+                    active: ticket.userHasReported,
+                    uuid: ticket.uuid,
+                    subject: 'ticket'
+                }) }}
+            {% endif %}
         </div>
     </div>
 
@@ -71,7 +73,7 @@
         <h2 class="fs-4 lh-1 m-0">Commentaires</h2>
     </div>
 
-    {{ include('public/ticket/_partials/comment-group.html.twig', { comments: comments, ticket: ticket, root_element: true }) }}
+    {{ include('public/ticket/_partials/comment-group.html.twig', { comments: comments, ticket: ticket, ticket_entity: ticket_entity, root_element: true }) }}
 
     {% if (previous >= 0) or (next < comments|length) %}
         <nav aria-label="Pagination des commentaires" class="mt-4">

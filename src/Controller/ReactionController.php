@@ -17,6 +17,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Security;
 
 #[Route(path: '/reactions', name: 'reactions_')]
 class ReactionController extends AbstractController
@@ -28,13 +29,14 @@ class ReactionController extends AbstractController
         private readonly VoteRepository $voteRepository,
         private readonly TicketRepository $ticketRepository,
         private readonly CommentRepository $commentRepository,
+        private readonly Security $security,
     ) {
     }
 
     #[Route(path: '/vote/{uuid}', name: 'vote', methods: ['POST'])]
     public function vote(string $uuid, Request $request): RedirectResponse
     {
-        if (!$this->validateSubmittedData(request: $request, authorizedSubjects: ['ticket', 'comment'], authorizedTypes: ['up', 'down', 'report'])) {
+        if (!$this->validateSubmittedData(request: $request, security: $this->security, authorizedSubjects: ['ticket', 'comment'], authorizedTypes: ['up', 'down', 'report'])) {
             return $this->redirect($request->headers->get('referer')."#{$uuid}");
         }
 
@@ -92,7 +94,7 @@ class ReactionController extends AbstractController
     {
         $description = strval($request->get('description'));
 
-        if (!$this->validateSubmittedData(request: $request, authorizedSubjects: ['ticket', 'comment'], authorizedTypes: ['up', 'down', 'report']) || empty($description)) {
+        if (!$this->validateSubmittedData(request: $request, security: $this->security, authorizedSubjects: ['ticket', 'comment'], authorizedTypes: ['up', 'down', 'report']) || empty($description)) {
             return $this->redirect($request->headers->get('referer')."#{$uuid}");
         }
 

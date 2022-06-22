@@ -12,6 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Security;
 
 #[Route(path: '/comments', name: 'comments_')]
 class CommentController extends AbstractController
@@ -21,6 +22,7 @@ class CommentController extends AbstractController
     public function __construct(
         private readonly TicketRepository $ticketRepository,
         private readonly CommentRepository $commentRepository,
+        private readonly Security $security,
     ) {
     }
 
@@ -31,7 +33,7 @@ class CommentController extends AbstractController
         $parentUuid = strval($request->get('parent_uuid'));
         $ticketUuid = strval($request->get('ticket_uuid'));
 
-        if (!$this->validateSubmittedData(request: $request, authorizedSubjects: ['ticket', 'comment']) || empty($content)) {
+        if (!$this->validateSubmittedData(request: $request, security: $this->security, authorizedSubjects: ['ticket', 'comment']) || empty($content)) {
             if (!empty($parentUuid)) {
                 return $this->redirect($request->headers->get('referer')."#{$parentUuid}");
             }

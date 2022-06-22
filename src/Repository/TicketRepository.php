@@ -48,7 +48,7 @@ class TicketRepository extends ServiceEntityRepository
     /**
      * @return Ticket[]
      */
-    public function getAll(bool $withClosed = true): array
+    public function getAll(bool $withClosed = true, ?int $limit = null): array
     {
         $builder = $this
             ->createQueryBuilder('t')
@@ -59,6 +59,10 @@ class TicketRepository extends ServiceEntityRepository
 
         if (!$withClosed) {
             $builder->andWhere('t.closed = false');
+        }
+
+        if ($limit) {
+            $builder->setMaxResults($limit);
         }
 
         return $builder

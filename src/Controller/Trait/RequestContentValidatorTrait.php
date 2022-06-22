@@ -7,21 +7,17 @@ use Symfony\Component\Security\Core\Security;
 
 trait RequestContentValidatorTrait
 {
-    public function __construct(
-        private readonly Security $security,
-    ) {
-    }
-
     /**
      * @param string[]|null $authorizedSubjects
      * @param string[]|null $authorizedTypes
      */
     private function validateSubmittedData(
         Request $request,
+        Security $security,
         ?array $authorizedSubjects = null,
         ?array $authorizedTypes = null,
     ): bool {
-        if (!$this->security->isGranted('ROLE_USER')) {
+        if (!$security->isGranted('ROLE_USER')) {
             $request->getSession()->getFlashBag()->add('warning', 'Vous devez être connecté pour ajouter une réaction ou signaler un contenu.');
 
             return false;
