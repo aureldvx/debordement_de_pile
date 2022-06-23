@@ -20,6 +20,7 @@ use Doctrine\Persistence\ManagerRegistry;
 class CategoryRepository extends ServiceEntityRepository
 {
     public const PAGINATOR_CATEGORIES_PER_PAGE = 10;
+    public const ADMIN_MAX_PER_PAGE = 20;
 
     public function __construct(ManagerRegistry $registry)
     {
@@ -65,6 +66,21 @@ class CategoryRepository extends ServiceEntityRepository
             ->orderBy('t.createdAt', 'DESC')
             ->setMaxResults(self::PAGINATOR_CATEGORIES_PER_PAGE)
             ->setFirstResult($offset)
+            ->getQuery();
+
+        return new Paginator($query);
+    }
+
+    /** @return Paginator<Category> */
+    public function getPaginator(int $offset, bool $enabled = true): Paginator
+    {
+        $query = $this
+            ->createQueryBuilder('c')
+            ->where('c.enabled = :state')
+            ->orderBy('c.createdAt', 'DESC')
+            ->setMaxResults(self::ADMIN_MAX_PER_PAGE)
+            ->setFirstResult($offset)
+            ->setParameter('state', $enabled)
             ->getQuery();
 
         return new Paginator($query);

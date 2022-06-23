@@ -30,7 +30,7 @@
             </a>
         </li>
         <li>
-            <a href="{{ path('admin_categories_list') }}" class="nav-link py-3 border-bottom rounded-0 {{ is_active_page('admin_categories') ? 'active' : '' }}" {{ is_active_page('admin_categories') ? 'aria-current="page"' : '' }} data-bs-toggle="tooltip" data-bs-placement="right" title="Catégories">
+            <a href="{{ path('admin_categories_list', { active: true }) }}" class="nav-link py-3 border-bottom rounded-0 {{ is_active_page('admin_categories') ? 'active' : '' }}" {{ is_active_page('admin_categories') ? 'aria-current="page"' : '' }} data-bs-toggle="tooltip" data-bs-placement="right" title="Catégories">
                 <svg class="bi pe-none" width="24" height="24" role="img" aria-label="Catégories"><use xlink:href="#collection"></use></svg>
             </a>
         </li>

@@ -1,0 +1,58 @@
+{% extends 'admin/admin.html.twig' %}
+
+{% block title 'Catégories' %}
+
+{% block main %}
+    <div class="d-flex flex-wrap justify-content-center justify-content-md-between align-items-center">
+        <h1 class="mb-5 lh-1">Catégories</h1>
+        <a href="{{ path('categories_create') }}" class="btn btn-success d-inline-flex gap-2 align-items-center align-self-start">
+            <svg class="bi" width="18" height="18" role="img" aria-label="Ajouter"><use xlink:href="#plus-circle"></use></svg>
+            Créer
+        </a>
+    </div>
+
+    {% set active_tab = app.request.get('active') ? 'open' : 'closed' %}
+    <div class="btn-group mb-4" role="group" aria-label="Filtres">
+        <a href="{{ path('admin_categories_list', { active: true }) }}" class="btn {{ active_tab == 'open' ? 'btn-primary' : 'btn-outline-primary' }}">Actives</a>
+        <a href="{{ path('admin_categories_list', { active: false }) }}" class="btn {{ active_tab == 'closed' ? 'btn-primary' : 'btn-outline-primary' }}">Supprimées</a>
+    </div>
+
+    <ul class="list-group w-100">
+        {% for category in categories %}
+            <li class="list-group-item d-flex py-3 flex-column justify-content-start align-items-start">
+                <div class="d-flex align-items-center gap-2">
+                    {% if category.enabled %}
+                        <form class="mb-3" action="{{ path('categories_deactivate', { slug: category.slug }) }}" method="post">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <button type="submit" class="btn btn-danger">Supprimer la catégorie</button>
+                        </form>
+                    {% else %}
+                        <form class="mb-3" action="{{ path('categories_reactivate', { slug: category.slug }) }}" method="post">
+                            <input type="hidden" name="_method" value="PATCH">
+                            <button type="submit" class="btn btn-info">Réactiver la catégorie</button>
+                        </form>
+                    {% endif %}
+                    <a href="{{ path('categories_edit', { uuid: category.uuid }) }}" class="btn btn-outline-primary d-inline-flex gap-2 align-items-center align-self-start">
+                        <svg class="bi" width="18" height="18" role="img" aria-label="Modifier"><use xlink:href="#pen"></use></svg>
+                        Modifier
+                    </a>
+                </div>
+                <a href="{{ path('categories_show', { slug: category.slug }) }}" target="_blank" class="text-decoration-none">{{ category.title }}</a>
+                <small class="text-muted mt-1">Créée le <span data-intl-date="{{ category.createdAt | date }}"></span> par {{ category.createdBy.pseudo }}</small>
+            </li>
+        {% endfor %}
+    </ul>
+
+    {% if (previous >= 0) or (next < categories|length) %}
+        <nav aria-label="Pagination des tickets" class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if previous >= 0 %}
+                    <li class="page-item"><a class="page-link" href="{{ path('admin_categories_list', { active: app.request.get('active', 1), offset: previous }) }}">Précédentes</a></li>
+                {% endif %}
+                {% if next < categories|length %}
+                    <li class="page-item"><a class="page-link" href="{{ path('admin_reports_list', { active: app.request.get('active', 1), offset: next }) }}">Suivantes</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% endif %}
+{% endblock %}

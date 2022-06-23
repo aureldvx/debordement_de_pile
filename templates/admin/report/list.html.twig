@@ -6,7 +6,7 @@
     <h1 class="mb-5">Signalements</h1>
 
     {% set active_tab = app.request.get('active') ? 'open' : 'closed' %}
-    <div class="btn-group mb-4" role="group" aria-label="Basic outlined example">
+    <div class="btn-group mb-4" role="group" aria-label="Filtres">
         <a href="{{ path('admin_reports_list', { active: true }) }}" class="btn {{ active_tab == 'open' ? 'btn-primary' : 'btn-outline-primary' }}">Signalements non-traités</a>
         <a href="{{ path('admin_reports_list', { active: false }) }}" class="btn {{ active_tab == 'closed' ? 'btn-primary' : 'btn-outline-primary' }}">Signalements traités</a>
     </div>

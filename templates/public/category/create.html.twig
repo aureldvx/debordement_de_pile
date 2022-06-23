@@ -10,6 +10,7 @@
     {{ form_row(category_form.title) }}
 
     {{ form_rest(category_form) }}
+    <input type="hidden" name="_referer" value="{{ referer }}">
     <button type="submit" class="btn btn-primary mt-2">Créer la catégorie</button>
     {{ form_end(category_form) }}
 {% endblock %}

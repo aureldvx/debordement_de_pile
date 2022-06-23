@@ -36,7 +36,7 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler la suppression</button>
-                                <form action="{{ path('categories_delete', { uuid: category.uuid }) }}" method="post">
+                                <form action="{{ path('categories_deactivate', { slug: category.slug }) }}" method="post">
                                     <input type="hidden" name="_method" value="DELETE">
                                     <button class="btn btn-danger">Confirmer la suppression</button>
                                 </form>

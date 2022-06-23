@@ -60,11 +60,17 @@ class CategoryController extends AbstractController
 
             $this->categoryRepository->add($category, true);
 
-            return $this->redirectToRoute('categories_show', ['slug' => $category->getSlug()]);
+            /** @var string|null $referer */
+            $referer = $request->request->get('_referer');
+
+            return $referer
+                ? $this->redirect($referer)
+                : $this->redirectToRoute('categories_show', ['slug' => $category->getSlug()]);
         }
 
         return $this->renderForm('public/category/create.html.twig', [
             'category_form' => $form,
+            'referer' => $request->headers->get('referer'),
         ]);
     }
 
@@ -107,29 +113,54 @@ class CategoryController extends AbstractController
             $this->categoryRepository->add($category, true);
             $this->addFlash('success', 'Catégorie mise à jour !');
 
-            return $this->redirectToRoute('categories_show', ['slug' => $category->getSlug()]);
+            /** @var string|null $referer */
+            $referer = $request->request->get('_referer');
+
+            return $referer
+                ? $this->redirect($referer)
+                : $this->redirectToRoute('categories_show', ['slug' => $category->getSlug()]);
         }
 
         return $this->renderForm('public/category/edit.html.twig', [
             'category_form' => $form,
+            'referer' => $request->headers->get('referer'),
             'category' => $category,
         ]);
     }
 
-    #[Route(path: '/{uuid}', name: 'delete', methods: ['DELETE'])]
-    public function delete(Category $category): Response
+    #[Route(path: '/{slug}', name: 'deactivate', methods: ['DELETE'])]
+    public function deactivate(Category $category, Request $request): Response
+    {
+        $referer = $this->switchCategoryState($category, $request, false);
+
+        return $referer
+            ? $this->redirect($referer)
+            : $this->redirectToRoute('categories_list');
+    }
+
+    #[Route(path: '/{slug}', name: 'reactivate', methods: ['PATCH'])]
+    public function reactivate(Category $category, Request $request): Response
+    {
+        $referer = $this->switchCategoryState($category, $request, true);
+
+        return $referer
+            ? $this->redirect($referer)
+            : $this->redirectToRoute('categories_list');
+    }
+
+    private function switchCategoryState(Category $category, Request $request, bool $state): ?string
     {
         if ($this->isGranted('DELETE_CATEGORY', $category)) {
-            $category->setEnabled(false);
+            $category->setEnabled($state);
 
             foreach ($category->getTickets() as $ticket) {
-                $ticket->setEnabled(false);
+                $ticket->setEnabled($state);
                 $this->manager->persist($ticket);
             }
 
             $this->categoryRepository->add($category, true);
         }
 
-        return $this->redirectToRoute('categories_list');
+        return $request->headers->get('referer');
     }
 }
