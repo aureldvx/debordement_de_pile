@@ -20,7 +20,7 @@
             </a>
         </li>
         <li>
-            <a href="{{ path('admin_users_list') }}" class="nav-link py-3 border-bottom rounded-0 {{ is_active_page('admin_users') ? 'active' : '' }}" {{ is_active_page('admin_users') ? 'aria-current="page"' : '' }} data-bs-toggle="tooltip" data-bs-placement="right" title="Utilisateurs">
+            <a href="{{ path('admin_users_list', { state: 'active' }) }}" class="nav-link py-3 border-bottom rounded-0 {{ is_active_page('admin_users') ? 'active' : '' }}" {{ is_active_page('admin_users') ? 'aria-current="page"' : '' }} data-bs-toggle="tooltip" data-bs-placement="right" title="Utilisateurs">
                 <svg class="bi pe-none" width="24" height="24" role="img" aria-label="Utilisateurs"><use xlink:href="#person-circle"></use></svg>
             </a>
         </li>

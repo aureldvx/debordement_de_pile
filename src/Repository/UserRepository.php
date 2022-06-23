@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -21,6 +22,8 @@ use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
  */
 class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
 {
+    public const ADMIN_MAX_PER_PAGE = 30;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, User::class);
@@ -56,5 +59,29 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $user->setPassword($newHashedPassword);
 
         $this->add($user, true);
+    }
+
+    /** @return Paginator<User> */
+    public function getPaginator(int $offset, bool $enabled = true, bool $blocked = false): Paginator
+    {
+        $query = $this
+            ->createQueryBuilder('u');
+
+        if ($blocked) {
+            $query->andWhere('u.blockedAt IS NOT NULL');
+            $query->orderBy('u.blockedAt', 'DESC');
+        } else {
+            $query->andWhere('u.enabled = :state');
+            $query->andWhere('u.blockedAt IS NULL');
+            $query->setParameter('state', $enabled);
+            $query->orderBy('u.createdAt', 'DESC');
+        }
+
+        $query
+            ->setMaxResults(self::ADMIN_MAX_PER_PAGE)
+            ->setFirstResult($offset)
+            ->getQuery();
+
+        return new Paginator($query);
     }
 }

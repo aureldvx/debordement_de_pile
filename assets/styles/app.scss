@@ -5,6 +5,11 @@
     scroll-margin-block-start: 4rem;
 }
 
+*:target {
+    outline-offset: 2px;
+    outline: rgba(var(--bs-info-rgb), .1) solid 4px;
+}
+
 label.required::after {
     content: '*';
     color: red;

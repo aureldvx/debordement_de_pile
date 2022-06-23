@@ -1,0 +1,21 @@
+{% extends 'admin/admin.html.twig' %}
+
+{% block title %}Modifier {{ user.pseudo }}{% endblock %}
+
+{% block main %}
+    <h1 class="mb-5">Modifier {{ user.pseudo }}</h1>
+
+    {{ form_start(user_form) }}
+
+    {{ form_row(user_form.firstname) }}
+    {{ form_row(user_form.lastname) }}
+    {{ form_row(user_form.email) }}
+    {{ form_row(user_form.phone) }}
+    {{ form_row(user_form.address) }}
+    {{ form_row(user_form.postalCode) }}
+    {{ form_row(user_form.city) }}
+
+    {{ form_rest(user_form) }}
+    <button type="submit" class="btn btn-primary">Mettre à jour les informations</button>
+    {{ form_end(user_form) }}
+{% endblock %}

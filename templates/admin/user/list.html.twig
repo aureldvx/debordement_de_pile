@@ -1,0 +1,82 @@
+{% extends 'admin/admin.html.twig' %}
+
+{% block title 'Utilisateurs' %}
+
+{% block main %}
+    <h1 class="mb-5">Utilisateurs</h1>
+
+    {% set active_tab = app.request.get('state', 'active') %}
+    <div class="btn-group mb-4" role="group" aria-label="Filtres">
+        <a href="{{ path('admin_users_list', { state: 'active' }) }}" class="btn {{ active_tab == 'active' ? 'btn-primary' : 'btn-outline-primary' }}">Utilisateurs actifs</a>
+        <a href="{{ path('admin_users_list', { state: 'blocked' }) }}" class="btn {{ active_tab == 'blocked' ? 'btn-primary' : 'btn-outline-primary' }}">Utilisateurs bloqués</a>
+        <a href="{{ path('admin_users_list', { state: 'closed' }) }}" class="btn {{ active_tab == 'closed' ? 'btn-primary' : 'btn-outline-primary' }}">Utilisateurs clôturés</a>
+    </div>
+
+    <ul class="list-group w-100">
+        {% for user in users %}
+            <li class="list-group-item d-flex py-3 flex-column justify-content-start align-items-start">
+                <div class="d-flex align-items-center flex-wrap gap-2 mt-3">
+                    {% if user.blockedAt is not null %}
+                        <button class="btn btn-outline-dark mb-3" disabled>Banni le <span data-intl-date="{{ user.blockedAt | date }}"></span></button>
+                        <form class="mb-3" action="{{ path('admin_users_unban', { uuid: user.uuid }) }}" method="post">
+                            <input type="hidden" name="_method" value="PATCH">
+                            <button type="submit" class="btn btn-info">Enlever le ban</button>
+                        </form>
+                    {% else %}
+                        <form class="mb-3" action="{{ path('admin_users_ban', { uuid: user.uuid }) }}" method="post">
+                            <input type="hidden" name="_method" value="PATCH">
+                            <button type="submit" class="btn btn-danger">Bannir</button>
+                        </form>
+                    {% endif %}
+                    {% if user.enabled %}
+                        <form class="mb-3" action="{{ path('admin_users_disable', { uuid: user.uuid }) }}" method="post">
+                            <input type="hidden" name="_method" value="PATCH">
+                            <button type="submit" class="btn btn-warning">Clôturer le compte</button>
+                        </form>
+                    {% else %}
+                        <form class="mb-3" action="{{ path('admin_users_enable', { uuid: user.uuid }) }}" method="post">
+                            <input type="hidden" name="_method" value="PATCH">
+                            <button type="submit" class="btn btn-info">Réactiver le compte</button>
+                        </form>
+                    {% endif %}
+                    <a href="{{ path('admin_users_edit', { uuid: user.uuid }) }}" class="btn btn-outline-primary d-inline-flex gap-2 align-items-center align-self-start">
+                        <svg class="bi" width="18" height="18" role="img" aria-label="Modifier"><use xlink:href="#pen"></use></svg>
+                        Modifier
+                    </a>
+                </div>
+
+                <a href="{{ path('admin_users_show', { uuid: user.uuid }) }}" class="text-decoration-none">{{ user.firstname }} {{ user.lastname }} ({{ user.pseudo }})</a>
+
+                <div class="d-flex align-items-center flex-wrap gap-2 mt-3">
+                    <button type="button" disabled class="btn btn-outline-secondary">
+                        <small>Tickets</small>
+                        <span class="badge text-bg-secondary">{{ user.tickets | length }}</span>
+                    </button>
+                    <button type="button" disabled class="btn btn-outline-secondary">
+                        <small>Commentaires</small>
+                        <span class="badge text-bg-secondary">{{ user.comments | length }}</span>
+                    </button>
+                    <button type="button" disabled class="btn btn-outline-secondary">
+                        <small>Votes</small>
+                        <span class="badge text-bg-secondary">{{ user.votes | length }}</span>
+                    </button>
+                </div>
+
+                <small class="text-muted mt-3">Compte créé le <span data-intl-date="{{ user.createdAt | date }}"></span></small>
+            </li>
+        {% endfor %}
+    </ul>
+
+    {% if (previous >= 0) or (next < users|length) %}
+        <nav aria-label="Pagination des tickets" class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if previous >= 0 %}
+                    <li class="page-item"><a class="page-link" href="{{ path('admin_users_list', { state: app.request.get('state', 'active'), offset: previous }) }}">Précédents</a></li>
+                {% endif %}
+                {% if next < users|length %}
+                    <li class="page-item"><a class="page-link" href="{{ path('admin_users_list', { state: app.request.get('state', 'active'), offset: next }) }}">Suivants</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% endif %}
+{% endblock %}

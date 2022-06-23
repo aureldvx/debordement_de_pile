@@ -1,0 +1,90 @@
+{% extends 'admin/admin.html.twig' %}
+
+{% block title %}{{ user.pseudo }}{% endblock %}
+
+{% block main %}
+    <h1 class="mb-5">{{ user.pseudo }}</h1>
+
+    {% set active_tab = app.request.get('state', 'tickets') %}
+
+    <ul class="nav nav-tabs" id="userTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link {{ active_tab == 'tickets' ? 'active' : '' }}" id="tickets-tab" data-bs-toggle="tab" data-bs-target="#tickets-tab-pane" type="button" role="tab" aria-controls="tickets-tab-pane" {{ active_tab == 'tickets' ? 'aria-selected="true"' : '' }}>Tickets</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link {{ active_tab == 'comments' ? 'active' : '' }}" id="comments-tab" data-bs-toggle="tab" data-bs-target="#comments-tab-pane" type="button" role="tab" aria-controls="comments-tab-pane" {{ active_tab == 'comments' ? 'aria-selected="true"' : '' }}>Commentaires</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link {{ active_tab == 'votes' ? 'active' : '' }}" id="votes-tab" data-bs-toggle="tab" data-bs-target="#votes-tab-pane" type="button" role="tab" aria-controls="votes-tab-pane" {{ active_tab == 'votes' ? 'aria-selected="true"' : '' }}>Votes</button>
+        </li>
+    </ul>
+    <div class="tab-content" id="userTabsContent">
+        <div class="tab-pane fade py-4 {{ active_tab == 'tickets' ? 'show active' : '' }}" id="tickets-tab-pane" role="tabpanel" aria-labelledby="tickets-tab" tabindex="0">
+            {% if user.tickets.count <= 0 %}
+                <div class="alert alert-secondary" role="alert">
+                    Aucun ticket ouvert par cet utilisateur.
+                </div>
+            {% else %}
+                <div class="vstack gap-2">
+                    {% for ticket in user.tickets[0:10] %}
+                        <a href="{{ path('tickets_show', { slug: ticket.slug }) }}" target="_blank" class="vstack p-2 rounded-2 border border-1 text-decoration-none">
+                            <span>{{ ticket.title[0:100] | u.truncate(95, '...') }}</span>
+                            <small class="text-muted">Ticket créé le <span data-intl-date="{{ ticket.createdAt | date('Y-m-d H:i:s') }}"></span></small>
+                        </a>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="tab-pane fade py-4 {{ active_tab == 'comments' ? 'show active' : '' }}" id="comments-tab-pane" role="tabpanel" aria-labelledby="comments-tab" tabindex="0">
+            {% if user.comments.count <= 0 %}
+                <div class="alert alert-secondary" role="alert">
+                    Aucun commentaire créé par cet utilisateur.
+                </div>
+            {% else %}
+                <div class="vstack gap-2">
+                    {% for comment in user.comments[0:10] %}
+                        <a href="{{ path('tickets_show', { slug: comment.ticket.slug, _fragment: comment.uuid }) }}" target="_blank" class="vstack p-2 rounded-2 border border-1 text-decoration-none">
+                            <span>{{ comment.content[0:100] | u.truncate(95, '...') }}</span>
+                            <small class="text-muted">Commentaire écrit le <span data-intl-date="{{ comment.createdAt | date('Y-m-d H:i:s') }}"></span></small>
+                        </a>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="tab-pane fade py-4 {{ active_tab == 'votes' ? 'show active' : '' }}" id="votes-tab-pane" role="tabpanel" aria-labelledby="votes-tab" tabindex="0">
+            <div class="vstack gap-2">
+                {% if user.votes.count <= 0 %}
+                    <div class="alert alert-secondary" role="alert">
+                        Aucun vote ajouté par cet utilisateur.
+                    </div>
+                {% else %}
+                    {% for vote in user.votes[0:10] %}
+                        {% if vote.ticket is not null %}
+                            <a href="{{ path('tickets_show', { slug: vote.ticket.slug }) }}" target="_blank" class="vstack p-2 rounded-2 border border-1 text-decoration-none">
+                                <span>{{ vote.ticket.title[0:100] | u.truncate(95, '...') }}</span>
+                                <small class="text-muted">Vote ajouté le <span data-intl-date="{{ vote.createdAt | date('Y-m-d H:i:s') }}"></span></small>
+                                {% if vote.type.value == 0 %}
+                                    <span class="badge rounded-pill text-bg-success text-uppercase w-max-content py-2 px-4 lh-1 mt-2">Upvote</span>
+                                {% else %}
+                                    <span class="badge rounded-pill text-bg-warning text-uppercase w-max-content py-2 px-4 lh-1 mt-2">Downvote</span>
+                                {% endif %}
+                            </a>
+                        {% elseif vote.comment is not null %}
+                            <a href="{{ path('tickets_show', { slug: vote.comment.ticket.slug, _fragment: vote.comment.uuid }) }}" target="_blank" class="vstack p-2 rounded-2 border border-1 text-decoration-none">
+                                <span>{{ vote.comment.content[0:100] | u.truncate(95, '...') }}</span>
+                                <small class="text-muted">Vote ajouté le <span data-intl-date="{{ vote.createdAt | date('Y-m-d H:i:s') }}"></span></small>
+                                {% if vote.type.value == 0 %}
+                                    <span class="badge rounded-pill text-bg-success text-uppercase w-max-content py-2 px-4 lh-1 mt-2">Upvote</span>
+                                {% else %}
+                                    <span class="badge rounded-pill text-bg-warning text-uppercase w-max-content py-2 px-4 lh-1 mt-2">Downvote</span>
+                                {% endif %}
+                            </a>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
