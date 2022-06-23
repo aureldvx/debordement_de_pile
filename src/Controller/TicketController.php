@@ -90,7 +90,6 @@ class TicketController extends AbstractController
 
         return $this->render('public/ticket/show.html.twig', [
             'ticket' => $ticketVM,
-            'ticket_entity' => $ticket,
             'comments' => $comments,
             'previous' => $offset - $this->commentRepository::PAGINATOR_COMMENTS_PER_PAGE,
             'next' => min(count($paginator), $offset + $this->commentRepository::PAGINATOR_COMMENTS_PER_PAGE),
@@ -149,6 +148,7 @@ class TicketController extends AbstractController
         $user = $this->getUser();
 
         $ticketVM = new TicketViewModel();
+        $ticketVM->entity = $ticket;
         $ticketVM->uuid = $ticket->getUuid();
         $ticketVM->pseudo = $ticket->getAuthor()->getPseudo();
         $ticketVM->title = $ticket->getTitle();
@@ -193,6 +193,7 @@ class TicketController extends AbstractController
         $user = $this->getUser();
 
         $commentVM = new CommentViewModel();
+        $commentVM->entity = $comment;
         $commentVM->uuid = $comment->getUuid();
         $commentVM->pseudo = UserHelpers::displayPseudo($comment->getAuthor());
         $commentVM->content = $comment->getContent();

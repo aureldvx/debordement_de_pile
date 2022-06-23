@@ -13,6 +13,7 @@ use App\Repository\CommentRepository;
 use App\Repository\ReportRepository;
 use App\Repository\TicketRepository;
 use App\Repository\VoteRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,6 +30,7 @@ class ReactionController extends AbstractController
         private readonly VoteRepository $voteRepository,
         private readonly TicketRepository $ticketRepository,
         private readonly CommentRepository $commentRepository,
+        private readonly EntityManagerInterface $manager,
         private readonly Security $security,
     ) {
     }
@@ -36,7 +38,13 @@ class ReactionController extends AbstractController
     #[Route(path: '/vote/{uuid}', name: 'vote', methods: ['POST'])]
     public function vote(string $uuid, Request $request): RedirectResponse
     {
-        if (!$this->validateSubmittedData(request: $request, security: $this->security, authorizedSubjects: ['ticket', 'comment'], authorizedTypes: ['up', 'down', 'report'])) {
+        if (!$this->validateSubmittedData(
+            request: $request,
+            security: $this->security,
+            grantedAttribute: 'ROLE_USER',
+            authorizedSubjects: ['ticket', 'comment'],
+            authorizedTypes: ['up', 'down', 'report'],
+        )) {
             return $this->redirect($request->headers->get('referer')."#{$uuid}");
         }
 
@@ -94,7 +102,13 @@ class ReactionController extends AbstractController
     {
         $description = strval($request->get('description'));
 
-        if (!$this->validateSubmittedData(request: $request, security: $this->security, authorizedSubjects: ['ticket', 'comment'], authorizedTypes: ['up', 'down', 'report']) || empty($description)) {
+        if (!$this->validateSubmittedData(
+            request: $request,
+            security: $this->security,
+            grantedAttribute: 'ROLE_USER',
+            authorizedSubjects: ['ticket', 'comment'],
+            authorizedTypes: ['up', 'down', 'report']
+        ) || empty($description)) {
             return $this->redirect($request->headers->get('referer')."#{$uuid}");
         }
 
@@ -138,6 +152,40 @@ class ReactionController extends AbstractController
         }
 
         $this->reportRepository->add($report, true);
+
+        return $this->redirect($request->headers->get('referer')."#{$uuid}");
+    }
+
+    #[Route(path: '/delete/{uuid}', name: 'delete', methods: ['DELETE'])]
+    public function delete(string $uuid, Request $request): RedirectResponse
+    {
+        $subject = strval($request->get('subject'));
+
+        if ('ticket' === $subject) {
+            $relatedEntity = $this->ticketRepository->findOneBy(['uuid' => $uuid]);
+        } else {
+            $relatedEntity = $this->commentRepository->findOneBy(['uuid' => $uuid]);
+        }
+
+        if (!$relatedEntity || !$this->validateSubmittedData(
+            request: $request,
+            security: $this->security,
+            grantedAttribute: 'ticket' === $subject ? 'DELETE_TICKET' : 'DELETE_COMMENT',
+            grantedSubject: $relatedEntity,
+            authorizedSubjects: ['ticket', 'comment'],
+            authorizedTypes: ['delete']
+        )) {
+            return $this->redirect($request->headers->get('referer')."#{$uuid}");
+        }
+
+        $relatedEntity->setEnabled(false);
+
+        if ($relatedEntity instanceof Ticket) {
+            $relatedEntity->setClosed(true);
+        }
+
+        $this->manager->persist($relatedEntity);
+        $this->manager->flush();
 
         return $this->redirect($request->headers->get('referer')."#{$uuid}");
     }

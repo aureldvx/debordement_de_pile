@@ -40,6 +40,10 @@ class TicketVoter extends Voter
                 return !$ticket->isClosed() && $ticket->isEnabled();
             }
 
+            if (self::DELETE === $attribute) {
+                return $ticket->isEnabled();
+            }
+
             return true;
         }
 
@@ -47,6 +51,7 @@ class TicketVoter extends Voter
             self::EDIT => $ticket->getAuthor() === $authUser && !$ticket->isClosed() && $ticket->isEnabled(),
             self::COMMENT, self::REACT => !$ticket->isClosed() && $ticket->isEnabled(),
             self::REPORT => $ticket->isEnabled(),
+            self::DELETE => $ticket->getAuthor() === $authUser && $ticket->isEnabled(),
             default => $ticket->getAuthor() === $authUser,
         };
     }

@@ -39,6 +39,10 @@ class CommentVoter extends Voter
                 return !$comment->getTicket()->isClosed() && $comment->getTicket()->isEnabled();
             }
 
+            if (self::DELETE === $attribute) {
+                return !$comment->getTicket()->isClosed() && $comment->isEnabled();
+            }
+
             return true;
         }
 
@@ -46,6 +50,7 @@ class CommentVoter extends Voter
             self::EDIT => $comment->getAuthor() === $authUser && !$comment->getTicket()->isClosed() && $comment->getTicket()->isEnabled(),
             self::COMMENT, self::REACT => !$comment->getTicket()->isClosed() && $comment->getTicket()->isEnabled(),
             self::REPORT => $comment->getTicket()->isEnabled(),
+            self::DELETE => $comment->getTicket()->getAuthor() === $authUser && !$comment->getTicket()->isClosed() && $comment->getTicket()->isEnabled() && $comment->isEnabled(),
             default => $comment->getAuthor() === $authUser,
         };
     }

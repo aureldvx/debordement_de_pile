@@ -33,7 +33,12 @@ class CommentController extends AbstractController
         $parentUuid = strval($request->get('parent_uuid'));
         $ticketUuid = strval($request->get('ticket_uuid'));
 
-        if (!$this->validateSubmittedData(request: $request, security: $this->security, authorizedSubjects: ['ticket', 'comment']) || empty($content)) {
+        if (!$this->validateSubmittedData(
+            request: $request,
+            security: $this->security,
+            grantedAttribute: 'ROLE_USER',
+            authorizedSubjects: ['ticket', 'comment'],
+        ) || empty($content)) {
             if (!empty($parentUuid)) {
                 return $this->redirect($request->headers->get('referer')."#{$parentUuid}");
             }

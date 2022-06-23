@@ -14,10 +14,12 @@ trait RequestContentValidatorTrait
     private function validateSubmittedData(
         Request $request,
         Security $security,
+        string $grantedAttribute,
+        mixed $grantedSubject = null,
         ?array $authorizedSubjects = null,
         ?array $authorizedTypes = null,
     ): bool {
-        if (!$security->isGranted('ROLE_USER')) {
+        if (!$security->isGranted($grantedAttribute, $grantedSubject)) {
             $request->getSession()->getFlashBag()->add('warning', 'Vous devez être connecté pour ajouter une réaction ou signaler un contenu.');
 
             return false;

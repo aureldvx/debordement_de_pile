@@ -13,7 +13,7 @@
                     <span class="reaction_label">Ticket clos</span>
                 </div>
             {% else %}
-                {% if is_granted('CLOSE_TICKET', ticket_entity) %}
+                {% if is_granted('CLOSE_TICKET', ticket.entity) %}
                     <form action="{{ path('tickets_close', { slug: ticket.slug }) }}" method="post" class="mb-4">
                         <input type="hidden" name="_method" value="PATCH">
                         <button type="submit" class="btn btn-danger d-flex gap-2 align-items-center">
@@ -25,7 +25,7 @@
             {% endif %}
             <h1 class="mb-4" id="{{ ticket.uuid }}">{{ ticket.title }}</h1>
             <div class="max-w-characters mb-4">{{ ticket.content }}</div>
-            <small class="text-muted">Publié par {{ display_pseudo(ticket_entity.author) }} le <span data-intl-date="{{ ticket.createdAt | date }}"></span></small>
+            <small class="text-muted">Publié par {{ display_pseudo(ticket.entity.author) }} le <span data-intl-date="{{ ticket.createdAt | date }}"></span></small>
             {% if is_granted('EDIT_TICKET', ticket) %}
                 <a href="{{ path('tickets_edit', { slug: ticket.slug }) }}" class="btn btn-primary d-inline-flex gap-2 align-items-center align-self-start mt-3">
                     <svg class="bi" width="18" height="18" role="img" aria-label="Modifier"><use xlink:href="#pen"></use></svg>
@@ -33,8 +33,8 @@
                 </a>
             {% endif %}
         </div>
-        <div class="d-flex flex-lg-column flex-shrink-0 gap-3 justify-content-between w-100 w-max-content align-self-lg-stretch align-items-start">
-            <div class="d-flex flex-lg-column gap-3">
+        <div class="d-flex flex-lg-column flex-shrink-0 gap-3 flex-wrap justify-content-between max-lg-auto align-self-lg-stretch align-items-start">
+            <div class="d-flex flex-lg-column gap-3 flex-wrap">
                 {{ include('public/ticket/_partials/reactions.html.twig', {
                     reaction: 'up',
                     active: ticket.userHasUpvote,
@@ -49,7 +49,7 @@
                     subject: 'ticket',
                     count: ticket.downVotesCount
                 }) }}
-                {% if is_granted('COMMENT_TICKET', ticket_entity) %}
+                {% if is_granted('COMMENT_TICKET', ticket.entity) %}
                     {{ include('public/ticket/_partials/reactions.html.twig', {
                         reaction: 'comment',
                         ticket_uuid: ticket.uuid,
@@ -58,14 +58,25 @@
                     }) }}
                 {% endif %}
             </div>
-            {% if is_granted('REPORT_TICKET', ticket_entity) %}
-                {{ include('public/ticket/_partials/reactions.html.twig', {
-                    reaction: 'report',
-                    active: ticket.userHasReported,
-                    uuid: ticket.uuid,
-                    subject: 'ticket'
-                }) }}
-            {% endif %}
+            <div class="d-flex flex-lg-column gap-3 flex-wrap">
+                {% if is_granted('REPORT_TICKET', ticket.entity) %}
+                    {{ include('public/ticket/_partials/reactions.html.twig', {
+                        reaction: 'report',
+                        active: ticket.userHasReported,
+                        uuid: ticket.uuid,
+                        subject: 'ticket'
+                    }) }}
+                {% endif %}
+                {% if is_granted('DELETE_TICKET', ticket.entity) %}
+                    {{ include('public/ticket/_partials/reactions.html.twig', {
+                        reaction: 'delete',
+                        active: true,
+                        uuid: ticket.uuid,
+                        subject: 'ticket',
+                        type: 'delete'
+                    }) }}
+                {% endif %}
+            </div>
         </div>
     </div>
 
@@ -73,7 +84,7 @@
         <h2 class="fs-4 lh-1 m-0">Commentaires</h2>
     </div>
 
-    {{ include('public/ticket/_partials/comment-group.html.twig', { comments: comments, ticket: ticket, ticket_entity: ticket_entity, root_element: true }) }}
+    {{ include('public/ticket/_partials/comment-group.html.twig', { comments: comments, ticket: ticket, root_element: true }) }}
 
     {% if (previous >= 0) or (next < comments|length) %}
         <nav aria-label="Pagination des commentaires" class="mt-4">

@@ -2,6 +2,7 @@
 
 namespace App\ValueObject;
 
+use App\Entity\Comment;
 use DateTimeImmutable;
 
 class CommentViewModel
@@ -26,4 +27,6 @@ class CommentViewModel
 
     /** @var CommentViewModel[] */
     public array $children = [];
+
+    public Comment $entity;
 }

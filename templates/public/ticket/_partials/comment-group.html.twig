@@ -13,7 +13,7 @@
                             <small class="opacity-50 text-nowrap" data-intl-date="{{ comment.createdAt | date }}"></small>
                         </div>
                     </div>
-                    <div class="d-flex gap-4 mt-3" style="padding-inline-start: 48px;">
+                    <div class="d-flex gap-4 mt-3 flex-wrap" style="padding-inline-start: 48px;">
                         {{ include('public/ticket/_partials/reactions.html.twig', {
                             reaction: 'up',
                             active: comment.userHasUpvote,
@@ -28,7 +28,7 @@
                             subject: 'comment',
                             count: comment.downVotesCount
                         }) }}
-                        {% if is_granted('COMMENT_TICKET', ticket_entity) %}
+                        {% if is_granted('COMMENT_TICKET', comment.entity) %}
                             {{ include('public/ticket/_partials/reactions.html.twig', {
                                 reaction: 'comment',
                                 ticket_uuid: ticket.uuid,
@@ -43,9 +43,18 @@
                             subject: 'comment',
                             align_end: true
                         }) }}
+                        {% if is_granted('DELETE_COMMENT', comment.entity) %}
+                            {{ include('public/ticket/_partials/reactions.html.twig', {
+                                reaction: 'delete',
+                                active: true,
+                                uuid: comment.uuid,
+                                subject: 'comment',
+                                type: 'delete'
+                            }) }}
+                        {% endif %}
                     </div>
                 </article>
-                {{ include('public/ticket/_partials/comment-group.html.twig', { comments: comment.children, ticket: ticket, ticket_entity: ticket_entity, root_element: false }) }}
+                {{ include('public/ticket/_partials/comment-group.html.twig', { comments: comment.children, ticket: ticket, root_element: false }) }}
             </div>
         {% endfor %}
     </div>

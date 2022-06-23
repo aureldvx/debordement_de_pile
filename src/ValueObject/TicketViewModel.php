@@ -2,6 +2,7 @@
 
 namespace App\ValueObject;
 
+use App\Entity\Ticket;
 use DateTimeImmutable;
 
 class TicketViewModel
@@ -29,4 +30,6 @@ class TicketViewModel
     public bool $userHasReported = false;
 
     public bool $closed = false;
+
+    public Ticket $entity;
 }
