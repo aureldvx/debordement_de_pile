@@ -3,7 +3,12 @@
 {% block title %}{{ user.pseudo }}{% endblock %}
 
 {% block main %}
-    <h1 class="mb-5">{{ user.pseudo }}</h1>
+    <h1 class="m-0">{{ user.pseudo }}</h1>
+
+    <a class="btn btn-info my-4 d-inline-flex gap-2 align-items-center align-self-start" href="{{ path('public_home', { _switch_user: user.pseudo }) }}">
+        <svg class="bi" width="18" height="18" role="img" aria-label="Usurper"><use xlink:href="#person-bounding-box"></use></svg>
+        Utiliser ce profil
+    </a>
 
     {% set active_tab = app.request.get('state', 'tickets') %}
 

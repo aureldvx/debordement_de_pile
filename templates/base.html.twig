@@ -16,5 +16,18 @@
     <body>
         {% include '_partials/_bootstrap-icons.html.twig' %}
         {% block body %}{% endblock %}
+        {% if is_granted('IS_IMPERSONATOR') %}
+            <div class="toast-container position-fixed bottom-0 end-0 p-3">
+                <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-header">
+                        <strong class="me-auto">Vue en tant que {{ app.user.pseudo }}</strong>
+                    </div>
+                    <div class="toast-body">
+                        <p>Vous êtes actuellement en train de naviguer avec le compte de {{ app.user.pseudo }}.</p>
+                        <a class="btn btn-primary mt-2" href="{{ impersonation_exit_path(path('admin_users_show', { uuid: app.user.uuid }) ) }}">Revenir au compte admin</a>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
     </body>
 </html>
