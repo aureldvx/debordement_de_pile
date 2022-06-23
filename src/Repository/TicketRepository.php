@@ -21,6 +21,7 @@ use Doctrine\Persistence\ManagerRegistry;
 class TicketRepository extends ServiceEntityRepository
 {
     public const PAGINATOR_TICKETS_PER_PAGE = 20;
+    public const ADMIN_MAX_PER_PAGE = 30;
 
     public function __construct(ManagerRegistry $registry)
     {
@@ -109,6 +110,28 @@ class TicketRepository extends ServiceEntityRepository
         }
 
         $query = $builder->getQuery();
+
+        return new Paginator($query);
+    }
+
+    /** @return Paginator<Ticket> */
+    public function getPaginator(int $offset, bool $enabled = true, bool $closed = false): Paginator
+    {
+        $query = $this->createQueryBuilder('t');
+
+        if ($closed) {
+            $query->andWhere('t.closed = true');
+        } else {
+            $query->andWhere('t.closed = false');
+            $query->andWhere('t.enabled = :state');
+            $query->setParameter('state', $enabled);
+        }
+
+        $query
+            ->orderBy('t.createdAt', 'DESC')
+            ->setMaxResults(self::ADMIN_MAX_PER_PAGE)
+            ->setFirstResult($offset)
+            ->getQuery();
 
         return new Paginator($query);
     }

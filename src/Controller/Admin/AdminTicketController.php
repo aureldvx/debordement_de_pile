@@ -21,9 +21,17 @@ class AdminTicketController extends AbstractController
     }
 
     #[Route(path: '/', name: 'list', methods: ['GET'])]
-    public function list(): Response
+    public function list(Request $request): Response
     {
-        return new Response();
+        $offset = max(0, $request->query->getInt('offset'));
+        $resolvedOnly = $request->query->getAlnum('state', 'active');
+        $paginator = $this->ticketRepository->getPaginator(offset: $offset, enabled: 'active' === $resolvedOnly, closed: 'closed' === $resolvedOnly);
+
+        return $this->render('admin/ticket/list.html.twig', [
+            'tickets' => $paginator,
+            'previous' => $offset - $this->ticketRepository::ADMIN_MAX_PER_PAGE,
+            'next' => min(count($paginator), $offset + $this->ticketRepository::ADMIN_MAX_PER_PAGE),
+        ]);
     }
 
     #[Route(path: '/{uuid}/deactivate', name: 'deactivate', methods: ['PATCH'])]

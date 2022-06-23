@@ -1,0 +1,46 @@
+{% extends 'admin/admin.html.twig' %}
+
+{% block title 'Tickets' %}
+
+{% block main %}
+    <h1 class="mb-5">Tickets</h1>
+
+    {% set active_tab = app.request.get('state', 'active') %}
+    <div class="btn-group mb-4" role="group" aria-label="Filtres">
+        <a href="{{ path('admin_tickets_list', { state: 'active' }) }}" class="btn {{ active_tab == 'active' ? 'btn-primary' : 'btn-outline-primary' }}">Tickets ouverts</a>
+        <a href="{{ path('admin_tickets_list', { state: 'closed' }) }}" class="btn {{ active_tab == 'closed' ? 'btn-primary' : 'btn-outline-primary' }}">Tickets clos</a>
+        <a href="{{ path('admin_tickets_list', { state: '' }) }}" class="btn {{ active_tab == '' ? 'btn-primary' : 'btn-outline-primary' }}">Tickets supprimés</a>
+    </div>
+
+    <div class="list-group w-100">
+        {% for ticket in tickets %}
+            <a href="{{ path('tickets_show', { slug: ticket.slug }) }}" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
+                {% if ticket.closed %}
+                    <div class="rounded-circle flex-shrink-0 bg-black bg-opacity-10 d-flex align-items-center justify-content-center" style="block-size: 40px; inline-size: 40px;">
+                        <svg class="bi text-black" width="18" height="18" role="img" aria-label="Verrouillé"><use xlink:href="#key"></use></svg>
+                    </div>
+                {% endif %}
+                <div class="d-flex gap-4 w-100 justify-content-between">
+                    <div>
+                        <h6 class="mb-1">{{ ticket.title }}</h6>
+                        <p class="mb-0 opacity-75">{{ ticket.content[0:300] | u.truncate(295, '...') }}</p>
+                    </div>
+                    <small class="opacity-50 text-nowrap" data-intl-date="{{ ticket.createdAt | date('Y-m-d H:i:s') }}"></small>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+
+    {% if (previous >= 0) or (next < tickets|length) %}
+        <nav aria-label="Pagination des tickets" class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if previous >= 0 %}
+                    <li class="page-item"><a class="page-link" href="{{ path('admin_tickets_list', { state: app.request.get('state', 'active'), offset: previous }) }}">Précédents</a></li>
+                {% endif %}
+                {% if next < tickets|length %}
+                    <li class="page-item"><a class="page-link" href="{{ path('admin_tickets_list', { state: app.request.get('state', 'active'), offset: next }) }}">Suivants</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% endif %}
+{% endblock %}
