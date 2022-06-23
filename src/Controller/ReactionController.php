@@ -121,7 +121,6 @@ class ReactionController extends AbstractController
             return $this->redirect($request->headers->get('referer')."#{$uuid}");
         }
 
-
         $report = new Report();
 
         $report

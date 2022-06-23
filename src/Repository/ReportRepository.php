@@ -2,7 +2,6 @@
 
 namespace App\Repository;
 
-use App\Entity\LoginActivity;
 use App\Entity\Report;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
