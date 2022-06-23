@@ -1,7 +1,6 @@
 import '../styles/app.scss';
 import '@popperjs/core';
 import * as bootstrap from 'bootstrap';
-import Alpine from 'alpinejs';
 
 [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]')).map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
 
@@ -17,6 +16,3 @@ const datetimeFormat = new Intl.DateTimeFormat(undefined, {
 [].slice.call(document.querySelectorAll('[data-intl-date]')).map(intlEl => {
     intlEl.textContent = datetimeFormat.format(new Date(intlEl.dataset.intlDate));
 });
-
-window.Alpine = Alpine;
-Alpine.start();
